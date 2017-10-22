@@ -1,0 +1,90 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,float,ragged2e,graphicx}
+\usepackage[natbibapa]{apacite}
+\usepackage[bookmarks, colorlinks, breaklinks]{hyperref}  
+\hypersetup{linkcolor=blue,citecolor=cyan,filecolor=black,urlcolor=blue}
+
+\author{Valentín Vergara Hidd}
+\title{Instalación de software relevante para el curso}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Esta guía (y el software que aparece aquí)}
+El propósito de este documento es orientar la instalación del proceso de instalación de algunos software que van a ser necesarios para el trabajo de este curso. Vamos a trabajar con software propietario como SPSS, SAS, N-Vivo, Atlas-ti, etc. Todos ellos se encuentran instalados en los computadores de la facultad y en caso de querer utilizarlos en sus computadores, los pueden encontrar en su sitio de descargas favoritos. Este documento no tiene a estos software como su principal objetivo, sino que a los software libres, que se pueden descargar ---legalmente--- utilizando los \emph{links} que se encuentran más abajo. Por motivos de factibilidad, son los que vamos a usar de forma más intensa en el curso, por lo que recomiendo su instalación en sus computadores personales. 
+
+En primer lugar, se presenta el software necesario para elaborar documentos con el lenguaje \LaTeX{}. De esta forma garantizamos un estándar en la elaboración de documentos. Una ventaja importante de este lenguaje, es que hace mucho más fácil la elaboración de documentos largos, como es el caso de las tesis.
+
+El segundo ``grupo'' de software que utilizaremos es para trabajar con el lenguaje R. Esto va a permitir hacer análisis de datos y presentarlos de manera profesional con gráficos y tablas de resultados completamente personalizables.
+
+La ventaja de todo el software presentado en esta guía es que es {\em software libre}; por lo que no se requiere el pago de licencias poara su uso, además de que se puede modificar por lo usuarios (que sepan como hacerlo). Finalmente, todo el software se puede instalar en windows, mac y linux. Es más, este documento está escrito en \LaTeX{} en un computador con linux (Debian 8).
+
+\subsection*{Actualización 2017}
+Como actualización de los contenidos del curso, agregaré este año a \emph{Git} como herramienta para el control de cambios, al igual que su contraparte en Internet, \emph{Git Hub}. Incluiré un repositorio público de este curso en Git Hub, al que se puede acceder a través de \href{http://miktex.org/}{este link}.
+
+\section*{\LaTeX{}}
+
+Lo primero que se debe considerar para elaborar documentos en \LaTeX{} es que necesitaremos de un compilador que va a generar el documento; de un software intermedio que va a traducir esto en un documento con extensión .pdf; y un editor, donde escribiremos el código necesario. En ese orden, lo que se va a utilizar es:
+
+\begin{enumerate}
+\item MikTeX/MacTeX/TeXLive
+\item Ghostscript (sólo windows)
+\item TexStudio.
+\end{enumerate}
+
+\subsection*{MikTeX/MacTeX/TeXLive}
+La instalación de esta parte es fundamental, porque a pesar de que no lo veremos funcionar, este software es el que posibilita compilar un documento con código (instrucciones en texto) y convertirlo en un documento que se puede leer por un ser humano. 
+
+En Windows, hay que descargar \href{http://miktex.org/}{MiKTeX}. Dependiendo del computador que tenga cada uno, pueden descargar la versión de \href{https://miktex.org/download#all}{32 bits} o la versión de \href{https://miktex.org/download#all}{64 bits}. Es un archivo ejecutable que no requiere mayor atención que seguir las instrucciones en pantalla.
+
+En Mac, se debe descargar \href{https://tug.org/mactex/}{MacTeX}. El link directo de descarga para la versión 2015 se encuentra \href{https://tug.org/mactex/mactex-download.html}{aquí}. Este archivo se instala como cualquier software, siguiendo las instrucciones en la pantalla.
+
+En Linux, se trabaja con TeXLive. En general, las distribuciones más populares lo incluyen en sus repositorios. Por ejemplo, en Debian (y todas las distribuciones basadas en Debian), se instala desde el terminal, con la siguiente instrucción:
+
+\begin{verbatim}
+sudo apt-get install texlive
+\end{verbatim}
+
+Si se quiere una versión completa ---pero más pesada--- se recomienda insgresar el siguiente código.
+
+\begin{verbatim}
+sudo apt-get install texlive-full
+\end{verbatim}
+
+\subsection*{Ghostscript}
+Las versiones más recientes de MacTeX y de TeXLive incluyen todo lo necesario para generar un documento en formato pdf. Windows, por otro lado, necesita un \emph{intérprete} para hacer esta conversión. Es un software pequeño, \href{http://www.ghostscript.com/}{Ghostscript}, que también tiene versiones de \href{https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs921/gs921w32.exe}{32 bits} y de \href{https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs921/gs921w64.exe}{64 bits}.
+
+\subsection*{TeXstudio}
+Hay muchos editores de código \LaTeX{} disponibles, tantos como editores de texto existen. La elección de editor depende mucho del gusto personal, por lo que les presnto la alternativa que yo considero más adecuada: \href{http://www.texstudio.org/}{TeXstudio}. Es multiplataforma, por lo que se puede descargar un archivo ejecutable para \href{https://sourceforge.net/projects/texstudio/files/texstudio/TeXstudio\%202.12.6/texstudio-2.12.6-win-qt5.9.1.exe/download}{Windows} o para \href{http://sourceforge.net/projects/texstudio/files/texstudio/TeXstudio\%202.9.4/texstudio_2.9.4_osx_qt5.zip/download}{Mac}. En Linux, basta con escribir en el terminal:
+
+\begin{verbatim}
+sudo apt-get install texstudio
+\end{verbatim}
+
+
+\subsection*{Manejo de referencias bibliográficas}
+
+Con todo lo anterior es suficiente para producir documentos de calidad y sin preocuparse del formato. Sin embargo, en el trabajo de tesis, una parte importante consiste en las referencias bibliográficas y su adecuada inclusión en el documento. \LaTeX{} también se puede encargar de eso, pero con un archivo auxiliar que sirve como una lista de referencias, que se pueden \emph{llamar} en cualquier parte del documento. Para facilitar la creación de dicha lista de referencias, se puede utilizar \href{http://jabref.sourceforge.net/}{JabRef}. Los instaladores de \href{http://sourceforge.net/projects/jabref/files/jabref/2.10/JabRef-2.10-setup.exe/download}{Windows} y \href{http://sourceforge.net/projects/jabref/files/jabref/2.10/JabRef-2.10-OSX.zip/download}{Mac} se encuentran disponibles en el sitio web de JabRef, en tanto que en Linux, se instala con la siguiente instrucción en terminal:
+
+\begin{verbatim}
+sudo apt-get install jabref
+\end{verbatim}
+
+	Es importante mencionar que JabRef requiere tener la última versión de java, en cualquiera de los tres sistemas operativos mencionados en este documento.
+
+\section*{Análisis estadísticos}
+Existen muchas alternativas para análisis estadísticos, incluso dentro de Excel existen algunas herramientas que posibilitan algunos análisis. Pero el estándar profesional es el lenguaje \href{https://www.r-project.org/}{R}. Para instalarlo, se ejecuta un archivo para \href{http://dirichlet.mat.puc.cl/bin/windows/base/R-3.2.1-win.exe}{Windows} o para \href{http://dirichlet.mat.puc.cl/bin/macosx/R-3.2.1.pkg}{Mac}. En linux, se puede hacer la instalación a través del terminal, con la siguiente instrucción:
+
+\begin{verbatim}
+sudo apt-get install r-base
+\end{verbatim}
+
+	Con eso basta para hacer prácticamente todos los análisis estadísticos que pudiésemos necesitar. El problema es que la interfaz gráfica no es muy amigable. Para eso, sugiero instalar ---luego de R--- \href{https://www.rstudio.com/}{RStudio}. Los instaladores para \href{https://download1.rstudio.org/RStudio-0.99.467.exe}{Windows}; \href{https://download1.rstudio.org/RStudio-0.99.467.dmg}{Mac}; \href{https://download1.rstudio.org/rstudio-0.99.467-i386.deb}{Debian 32 bits}; y \href{https://download1.rstudio.org/rstudio-0.99.467-amd64.deb}{Debian 64 bits}.
+
+
+
+\end{document}

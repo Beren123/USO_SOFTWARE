@@ -1,0 +1,10 @@
+\frametitle{Tabla $\neq $ Cuadro}
+Por defecto, \LaTeX{} agrega la palabra \emph{cuadro} en lugar de \emph{tabla}. Para solucionar esto, basta con agregar la siguiente instrucción, inmediatamente después de iniciado el documento:
+\begin{lstlisting}
+\begin{document}
+\renewcommand{\listtablename}{Índice de tablas}
+\renewcommand{\tablename}{Tabla}
+
+
+\end{document}
+\end{lstlisting}
