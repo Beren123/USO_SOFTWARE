@@ -34,8 +34,7 @@ En general, usamos software -en el contexto de los análisis de texto- para algu
 2. R Studio u otro software similar (opcional).
 3. Conexión a Internet.
 4. Una cuenta de [twitter](www.twitter.com).
-5. Una cuenta de [facebook](www.facebook.com)
-6. Instalación de los siguientes paquetes de R.
+5. Instalación de los siguientes paquetes de R.
 ```{r}
 install.packages(c("tm", "wordcloud", "readr"))
 ```
@@ -179,7 +178,7 @@ ggplot(lq_mat3, aes(palabra, frec)) +
 ---
 ![](g1.png)
 
---- .segue bg:grey
+--- .segue bg:lightgreen
 # Obtener datos de Internet
 
 ---
@@ -275,3 +274,6 @@ tw_text<-stripWhitespace(tw_text)
 wordcloud(tw_text, max.words = 200, random.order = F, 
           colors = brewer.pal(name = "Dark2", n = 8))
 ```
+
+--- .segue bg:lightgreen
+# ¿Preguntas?

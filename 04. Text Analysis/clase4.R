@@ -47,3 +47,31 @@ ggplot(lq_mat3, aes(palabra, frec)) +
   geom_text(aes(hjust = 1.3, label = frec)) + 
   coord_flip() + 
   labs(title = "Diez palabras más frecuentes en La última Pregunta",  x = "Palabras", y = "Número de usos")
+
+# AHORA VIENE LA PARTE DE TWITTER
+
+library(twitteR)
+
+api_key<-"0PTepmHsqgGKzmPVSYfmh9o7q"
+api_secret<-"NsS8erUPqKeWa3nttH5zOaPbwnskHE6OOIlQZz6THvvNrX6mn1"
+token_key<-"15371696-ol1RLuVjh6w7AGyk9DDw7HrFRFBp35Ne7NDCr2cNe"
+token_secret<-"QnTUUQhBRqMTlZp8uz7dPWj7SNHIQvCmPkkrXTRvrX8IU"
+
+setup_twitter_oauth(api_key,api_secret,token_key,token_secret)
+
+my_tweets<-userTimeline("nitnelav", 2000)
+
+#create a dataframe
+
+tw.df<-twListToDF(my_tweets)
+
+tw_text<-Corpus(VectorSource(tw.df$text))
+
+tw_text<-gsub("[[:cntrl:]]", " ", tw_text)
+tw_text<-tolower(tw_text)
+tw_text<-removeWords(tw_text, words = stopwords("spanish"))
+tw_text<-removePunctuation(tw_text)
+tw_text<-removeNumbers(tw_text)
+tw_text<-stripWhitespace(tw_text)
+
+wordcloud(tw_text, max.words = 100, random.order = F, colors = brewer.pal(name = "Dark2", n = 8))
