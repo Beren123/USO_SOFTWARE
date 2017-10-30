@@ -15,6 +15,10 @@ biglogo     : marcaderecha.png
 --- .segue bg:lightgreen
 # Diferentes formatos de archivo
 
+
+--- .segue bg:lightgreen
+## Archivos de SPSS
+
 ---
 
 ## Formatos
@@ -31,8 +35,22 @@ install.packages("foreign", repos = 'https://dirichlet.mat.puc.cl/')
 ```
 
 ```
-## Installing package into '/usr/local/lib/R/site-library'
+## Installing package into 'C:/Users/valentin.vergara/Documents/R/win-library/3.3'
 ## (as 'lib' is unspecified)
+```
+
+```
+## package 'foreign' successfully unpacked and MD5 sums checked
+```
+
+```
+## Warning: cannot remove prior installation of package 'foreign'
+```
+
+```
+## 
+## The downloaded binary packages are in
+## 	C:\Users\valentin.vergara\AppData\Local\Temp\RtmpuS6HqT\downloaded_packages
 ```
 Con este paquete, podremos leer archivos en formatos propietarios. 
 
@@ -48,7 +66,8 @@ spss1<-read.spss("./examen.sav", to.data.frame = TRUE)
 ```
 
 ```
-## re-encoding from latin1
+## Warning in read.spss("./examen.sav", to.data.frame = TRUE): ./examen.sav:
+## Unrecognized record type 7, subtype 18 encountered in system file
 ```
 
 ---
@@ -114,10 +133,10 @@ head(spss2)
 ##   puntaje horas ansiedad hombre
 ## 1      62    40       40      0
 ## 2      58    31       65      1
-## 3      52    35       34      1
-## 4      55    26       91      1
+## 3      52    35       34      0
+## 4      55    26       91      0
 ## 5      75    51       46      1
-## 6      82    48       52      1
+## 6      82    48       52      0
 ```
 
 Luego, nos aseguramos que el objeto [spss2] sea aún un objeto de tipo *dataframe*
@@ -140,6 +159,166 @@ En la mayoría de los casos, no debería ser necesario exportar los datos a otro
 write.foreign(spss2, "./datos.txt", "./datos.sps", package = "SPSS")
 ```
 Los archivos resultantes se deberían poder leer desde SPSS.
+
+--- .segue bg:lightgreen
+## Planillas de Cálculo creadas con MS Excel
+
+---
+## Instalación de paquetes.
+
+Existen varios paquetes que permiten leer planillas de cáculo creadas con MS Excel, con la desventaja de necesitar dependencias externas para funcionar (Java, Pearl, OCDB, etc). Por tanto, trabajaremos con el paquete que no requiere dependencias externas.
+
+```r
+install.packages("readxl")
+```
+
+```
+## Installing package into 'C:/Users/valentin.vergara/Documents/R/win-library/3.3'
+## (as 'lib' is unspecified)
+```
+
+```
+## Error in contrib.url(repos, "source"): trying to use CRAN without setting a mirror
+```
+
+```r
+library(readxl)
+```
+
+```
+## Warning: package 'readxl' was built under R version 3.3.3
+```
+
+---
+## Lectura de los datos.
+Vamos a trabajar con la planilla **survey.xls**, disponible en INFODA. Para ello, crearemos un objeto [excel1] que contenga la planilla.
+
+```r
+excel1<-read_excel("./survey.xlsx")
+```
+
+Para ver los nombres de las variables, utilizamos la función names.
+
+```r
+names(excel1)
+```
+
+```
+## [1] "id"           "satisfaccion" "edad"         "escolaridad" 
+## [5] "sexo"         "transporte"   "casado"       "mot_trab"
+```
+
+---
+## Más información sobre los datos.
+Copmo alternativa, si se quiere obtener más información del dataframe:
+
+```r
+str(excel1)
+```
+
+```
+## Classes 'tbl_df', 'tbl' and 'data.frame':	79 obs. of  8 variables:
+##  $ id          : chr  "001" "002" "003" "004" ...
+##  $ satisfaccion: num  84.7 82.8 68.2 70 81.4 87.7 68.7 89.2 88.7 85.6 ...
+##  $ edad        : num  29 21 21 23 29 47 45 21 46 28 ...
+##  $ escolaridad : num  12 12 12 11 12 12 10 12 14 14 ...
+##  $ sexo        : chr  "M" "M" "F" "F" ...
+##  $ transporte  : chr  "BUS" "CAR" "CAR" "CAR" ...
+##  $ casado      : num  1 1 0 0 1 1 0 1 1 0 ...
+##  $ mot_trab    : num  1 1 1 2 1 3 3 1 2 1 ...
+```
+
+---
+## Incluir información en el dataframe
+Imaginemos que los 79 estudiantes pertenecen a colegios municipales, subvencionados o particulares. Vamos a crear un objeto [dependencia] con 79 valores al azar.
+
+
+```r
+dependencia<-sample(c("Municipal", "Subvencionado", "Particular"), 79, replace = TRUE)
+```
+
+y luego incluímos este objeto en el dataframe [excel1], para crear un nuevo objeto [excel2]
+
+```r
+excel2<-cbind(excel1,dependencia)
+```
+
+---
+Revisamos las dimensiones del nuevo dataframe:
+
+```r
+dim(excel2)
+```
+
+```
+## [1] 79  9
+```
+Si interesa conocer en mayor detalle el dataframe, se pueden observar las seis primeras observaciones.
+
+```r
+head(excel2)
+```
+
+```
+##    id satisfaccion edad escolaridad sexo transporte casado mot_trab
+## 1 001         84.7   29          12    M        BUS      1        1
+## 2 002         82.8   21          12    M        CAR      1        1
+## 3 003         68.2   21          12    F        CAR      0        1
+## 4 004         70.0   23          11    F        CAR      0        2
+## 5 005         81.4   29          12    F        CAR      1        1
+## 6 006         87.7   47          12    F        CAR      1        3
+##     dependencia
+## 1    Particular
+## 2     Municipal
+## 3     Municipal
+## 4 Subvencionado
+## 5     Municipal
+## 6 Subvencionado
+```
+
+---
+## Exportar datos
+Para exportar el dataframe recién creado, hay que cargar un paquete adicional.
+
+```r
+install.packages("xlsx")
+```
+
+```
+## Installing package into 'C:/Users/valentin.vergara/Documents/R/win-library/3.3'
+## (as 'lib' is unspecified)
+```
+
+```
+## Error in contrib.url(repos, "source"): trying to use CRAN without setting a mirror
+```
+
+```r
+library(xlsx)
+```
+
+```
+## Loading required package: rJava
+```
+
+```
+## Loading required package: xlsxjars
+```
+
+---
+Una vez cargado el paquete, se exportan los datos.
+
+```r
+write.xlsx(excel2, "./excel2.xlsx", sheetName = "Hoja1")
+```
+
+--- .segue bg:lightgreen
+# ¿Preguntas?
+
+
+
+
+
 
 
 

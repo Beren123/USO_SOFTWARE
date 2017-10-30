@@ -15,6 +15,10 @@ biglogo     : marcaderecha.png
 --- .segue bg:lightgreen
 # Diferentes formatos de archivo
 
+
+--- .segue bg:lightgreen
+## Archivos de SPSS
+
 ---
 
 ## Formatos
@@ -89,6 +93,82 @@ En la mayoría de los casos, no debería ser necesario exportar los datos a otro
 write.foreign(spss2, "./datos.txt", "./datos.sps", package = "SPSS")
 ```
 Los archivos resultantes se deberían poder leer desde SPSS.
+
+--- .segue bg:lightgreen
+## Planillas de Cálculo creadas con MS Excel
+
+---
+## Instalación de paquetes.
+
+Existen varios paquetes que permiten leer planillas de cáculo creadas con MS Excel, con la desventaja de necesitar dependencias externas para funcionar (Java, Pearl, OCDB, etc). Por tanto, trabajaremos con el paquete que no requiere dependencias externas.
+```{r}
+install.packages("readxl")
+library(readxl)
+```
+
+---
+## Lectura de los datos.
+Vamos a trabajar con la planilla **survey.xls**, disponible en INFODA. Para ello, crearemos un objeto [excel1] que contenga la planilla.
+```{r}
+excel1<-read_excel("./survey.xlsx")
+````
+
+Para ver los nombres de las variables, utilizamos la función names.
+```{r}
+names(excel1)
+```
+
+---
+## Más información sobre los datos.
+Copmo alternativa, si se quiere obtener más información del dataframe:
+```{r}
+str(excel1)
+```
+
+---
+## Incluir información en el dataframe
+Imaginemos que los 79 estudiantes pertenecen a colegios municipales, subvencionados o particulares. Vamos a crear un objeto [dependencia] con 79 valores al azar.
+
+```{r}
+dependencia<-sample(c("Municipal", "Subvencionado", "Particular"), 79, replace = TRUE)
+```
+
+y luego incluímos este objeto en el dataframe [excel1], para crear un nuevo objeto [excel2]
+```{r}
+excel2<-cbind(excel1,dependencia)
+```
+
+---
+Revisamos las dimensiones del nuevo dataframe:
+```{r}
+dim(excel2)
+```
+Si interesa conocer en mayor detalle el dataframe, se pueden observar las seis primeras observaciones.
+```{r}
+head(excel2)
+```
+
+---
+## Exportar datos
+Para exportar el dataframe recién creado, hay que cargar un paquete adicional.
+```{r}
+install.packages("xlsx")
+library(xlsx)
+```
+
+---
+Una vez cargado el paquete, se exportan los datos.
+```{r}
+write.xlsx(excel2, "./excel2.xlsx", sheetName = "Hoja1")
+```
+
+--- .segue bg:lightgreen
+# ¿Preguntas?
+
+
+
+
+
 
 
 
