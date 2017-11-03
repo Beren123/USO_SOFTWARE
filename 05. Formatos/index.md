@@ -35,22 +35,8 @@ install.packages("foreign", repos = 'https://dirichlet.mat.puc.cl/')
 ```
 
 ```
-## Installing package into 'C:/Users/valentin.vergara/Documents/R/win-library/3.3'
+## Installing package into '/usr/local/lib/R/site-library'
 ## (as 'lib' is unspecified)
-```
-
-```
-## package 'foreign' successfully unpacked and MD5 sums checked
-```
-
-```
-## Warning: cannot remove prior installation of package 'foreign'
-```
-
-```
-## 
-## The downloaded binary packages are in
-## 	C:\Users\valentin.vergara\AppData\Local\Temp\RtmpuS6HqT\downloaded_packages
 ```
 Con este paquete, podremos leer archivos en formatos propietarios. 
 
@@ -66,8 +52,7 @@ spss1<-read.spss("./examen.sav", to.data.frame = TRUE)
 ```
 
 ```
-## Warning in read.spss("./examen.sav", to.data.frame = TRUE): ./examen.sav:
-## Unrecognized record type 7, subtype 18 encountered in system file
+## re-encoding from latin1
 ```
 
 ---
@@ -132,9 +117,9 @@ head(spss2)
 ```
 ##   puntaje horas ansiedad hombre
 ## 1      62    40       40      0
-## 2      58    31       65      1
+## 2      58    31       65      0
 ## 3      52    35       34      0
-## 4      55    26       91      0
+## 4      55    26       91      1
 ## 5      75    51       46      1
 ## 6      82    48       52      0
 ```
@@ -169,24 +154,16 @@ Los archivos resultantes se deberían poder leer desde SPSS.
 Existen varios paquetes que permiten leer planillas de cáculo creadas con MS Excel, con la desventaja de necesitar dependencias externas para funcionar (Java, Pearl, OCDB, etc). Por tanto, trabajaremos con el paquete que no requiere dependencias externas.
 
 ```r
-install.packages("readxl")
+install.packages("readxl", repos = 'https://dirichlet.mat.puc.cl/')
 ```
 
 ```
-## Installing package into 'C:/Users/valentin.vergara/Documents/R/win-library/3.3'
+## Installing package into '/usr/local/lib/R/site-library'
 ## (as 'lib' is unspecified)
-```
-
-```
-## Error in contrib.url(repos, "source"): trying to use CRAN without setting a mirror
 ```
 
 ```r
 library(readxl)
-```
-
-```
-## Warning: package 'readxl' was built under R version 3.3.3
 ```
 
 ---
@@ -268,12 +245,12 @@ head(excel2)
 ## 5 005         81.4   29          12    F        CAR      1        1
 ## 6 006         87.7   47          12    F        CAR      1        3
 ##     dependencia
-## 1    Particular
-## 2     Municipal
-## 3     Municipal
-## 4 Subvencionado
-## 5     Municipal
-## 6 Subvencionado
+## 1     Municipal
+## 2 Subvencionado
+## 3 Subvencionado
+## 4    Particular
+## 5    Particular
+## 6    Particular
 ```
 
 ---
@@ -281,16 +258,12 @@ head(excel2)
 Para exportar el dataframe recién creado, hay que cargar un paquete adicional.
 
 ```r
-install.packages("xlsx")
+install.packages("xlsx", repos = 'https://dirichlet.mat.puc.cl/')
 ```
 
 ```
-## Installing package into 'C:/Users/valentin.vergara/Documents/R/win-library/3.3'
+## Installing package into '/usr/local/lib/R/site-library'
 ## (as 'lib' is unspecified)
-```
-
-```
-## Error in contrib.url(repos, "source"): trying to use CRAN without setting a mirror
 ```
 
 ```r
@@ -313,7 +286,51 @@ write.xlsx(excel2, "./excel2.xlsx", sheetName = "Hoja1")
 ```
 
 --- .segue bg:lightgreen
+# Algunas transformaciones.
+
+---
+## Tipo de variable:factor
+Para las variables categóricas, a veces es necesario especificar que son de este tipo, al mismo tiempo que indicamos sus niveles de medición y una etiqueta para cada categoría. Considerando, por ejemplo, el dataframe [excel2] y las variables **sexo** y **casado**.
+
+Para **sexo**, sabemos que la variable tiene dos niveles {F.M}, que etiquetaremos como {Mujer, Hombre}.
+
+```r
+excel2$sexo<-factor(excel2$sexo, levels = c("F", "M"), labels = c("Mujer", "Hombre"))
+```
+
+Para **casado**, sustituímos los niveles {0,1} por {No, Sí}
+
+```r
+  excel2$casado<-factor(excel2$casado, levels = c(0,1), labels = c("No", "Sí"))
+```
+
+---
+Para comprobar que se efectuaron los cambios, podemos ver las primeras filas del dataframe.
+
+```r
+head(excel2)
+```
+
+```
+##    id satisfaccion edad escolaridad   sexo transporte casado mot_trab
+## 1 001         84.7   29          12 Hombre        BUS     Sí        1
+## 2 002         82.8   21          12 Hombre        CAR     Sí        1
+## 3 003         68.2   21          12  Mujer        CAR     No        1
+## 4 004         70.0   23          11  Mujer        CAR     No        2
+## 5 005         81.4   29          12  Mujer        CAR     Sí        1
+## 6 006         87.7   47          12  Mujer        CAR     Sí        3
+##     dependencia
+## 1     Municipal
+## 2 Subvencionado
+## 3 Subvencionado
+## 4    Particular
+## 5    Particular
+## 6    Particular
+```
+
+--- .segue bg:lightgreen
 # ¿Preguntas?
+---
 
 
 

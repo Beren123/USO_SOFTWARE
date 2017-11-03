@@ -1,5 +1,9 @@
+SET DECIMAL=DOT.
+
 DATA LIST FILE= "./datos.txt"  free (",")
-/ puntaje horas ansiedad hombre  .
+ENCODING="Locale"
+/ puntaje horas ansiedad hombre 
+  .
 
 VARIABLE LABELS
 puntaje "puntaje" 
@@ -7,5 +11,7 @@ puntaje "puntaje"
  ansiedad "ansiedad" 
  hombre "hombre" 
  .
+VARIABLE LEVEL puntaje, horas, ansiedad, hombre 
+ (scale).
 
 EXECUTE.

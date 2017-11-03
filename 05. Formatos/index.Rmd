@@ -102,7 +102,7 @@ Los archivos resultantes se deberían poder leer desde SPSS.
 
 Existen varios paquetes que permiten leer planillas de cáculo creadas con MS Excel, con la desventaja de necesitar dependencias externas para funcionar (Java, Pearl, OCDB, etc). Por tanto, trabajaremos con el paquete que no requiere dependencias externas.
 ```{r}
-install.packages("readxl")
+install.packages("readxl", repos = 'https://dirichlet.mat.puc.cl/')
 library(readxl)
 ```
 
@@ -152,7 +152,7 @@ head(excel2)
 ## Exportar datos
 Para exportar el dataframe recién creado, hay que cargar un paquete adicional.
 ```{r}
-install.packages("xlsx")
+install.packages("xlsx", repos = 'https://dirichlet.mat.puc.cl/')
 library(xlsx)
 ```
 
@@ -163,7 +163,31 @@ write.xlsx(excel2, "./excel2.xlsx", sheetName = "Hoja1")
 ```
 
 --- .segue bg:lightgreen
+# Algunas transformaciones.
+
+---
+## Tipo de variable:factor
+Para las variables categóricas, a veces es necesario especificar que son de este tipo, al mismo tiempo que indicamos sus niveles de medición y una etiqueta para cada categoría. Considerando, por ejemplo, el dataframe [excel2] y las variables **sexo** y **casado**.
+
+Para **sexo**, sabemos que la variable tiene dos niveles {F.M}, que etiquetaremos como {Mujer, Hombre}.
+```{r}
+excel2$sexo<-factor(excel2$sexo, levels = c("F", "M"), labels = c("Mujer", "Hombre"))
+```
+
+Para **casado**, sustituímos los niveles {0,1} por {No, Sí}
+```{r}
+excel2$casado<-factor(excel2$casado, levels = c(0,1), labels = c("No", "Sí"))
+```
+
+---
+Para comprobar que se efectuaron los cambios, podemos ver las primeras filas del dataframe.
+```{r}
+head(excel2)
+```
+
+--- .segue bg:lightgreen
 # ¿Preguntas?
+---
 
 
 
