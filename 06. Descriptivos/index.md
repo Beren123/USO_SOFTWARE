@@ -53,12 +53,12 @@ str(simulados)
 ## 'data.frame':	1000 obs. of  8 variables:
 ##  $ id     : int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ grupo  : Factor w/ 2 levels "Control","Tratamiento": 2 2 2 2 2 2 2 2 2 2 ...
-##  $ edad   : int  24 54 43 24 15 33 54 27 18 55 ...
-##  $ nhijos : int  1 1 1 2 2 0 0 0 0 0 ...
-##  $ iq     : num  56.6 93 101.1 108.8 120.2 ...
-##  $ psu    : num  595 581 325 516 390 ...
+##  $ edad   : int  49 43 39 36 63 55 58 40 44 41 ...
+##  $ nhijos : int  1 2 1 0 2 2 0 0 2 0 ...
+##  $ iq     : num  78.8 95.2 106.3 77.9 103.4 ...
+##  $ psu    : num  522 453 631 465 609 ...
 ##  $ rep_psu: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ trabaja: Factor w/ 2 levels "No","Sí": 2 1 2 1 1 1 1 1 2 1 ...
+##  $ trabaja: Factor w/ 2 levels "No","Sí": 1 1 2 1 2 1 1 2 1 2 ...
 ```
 
 ---
@@ -70,16 +70,16 @@ head(simulados, 10)
 
 ```
 ##    id       grupo edad nhijos        iq      psu rep_psu trabaja
-## 1   1 Tratamiento   24      1  56.63805 595.0977       0      Sí
-## 2   2 Tratamiento   54      1  93.02590 580.8767       0      No
-## 3   3 Tratamiento   43      1 101.06454 324.9841       0      Sí
-## 4   4 Tratamiento   24      2 108.81656 515.7536       0      No
-## 5   5 Tratamiento   15      2 120.21654 389.5970       0      No
-## 6   6 Tratamiento   33      0 103.65279 331.7333       0      No
-## 7   7 Tratamiento   54      0  81.84668 530.7611       0      No
-## 8   8 Tratamiento   27      0 110.11550 365.4292       0      No
-## 9   9 Tratamiento   18      0 100.39803 356.1599       0      Sí
-## 10 10 Tratamiento   55      0 105.32623 450.8300       0      No
+## 1   1 Tratamiento   49      1  78.80686 521.7601       0      No
+## 2   2 Tratamiento   43      2  95.18951 452.8856       0      No
+## 3   3 Tratamiento   39      1 106.26767 631.0511       0      Sí
+## 4   4 Tratamiento   36      0  77.88706 465.3412       0      No
+## 5   5 Tratamiento   63      2 103.40683 608.8420       0      Sí
+## 6   6 Tratamiento   55      2  91.28036 606.9076       0      No
+## 7   7 Tratamiento   58      0 122.41530 586.7762       0      No
+## 8   8 Tratamiento   40      0 105.93485 491.0386       0      Sí
+## 9   9 Tratamiento   44      2  81.83454 298.1124       0      No
+## 10 10 Tratamiento   41      0 105.59949 685.2019       0      Sí
 ```
 
 ---
@@ -169,18 +169,18 @@ summary(simulados)
 ```
 ##        id                 grupo          edad           nhijos     
 ##  Min.   :   1.0   Control    :500   Min.   :15.00   Min.   :0.000  
-##  1st Qu.: 250.8   Tratamiento:500   1st Qu.:27.00   1st Qu.:0.000  
+##  1st Qu.: 250.8   Tratamiento:500   1st Qu.:28.00   1st Qu.:0.000  
 ##  Median : 500.5                     Median :40.00   Median :1.000  
-##  Mean   : 500.5                     Mean   :39.83   Mean   :1.059  
-##  3rd Qu.: 750.2                     3rd Qu.:52.00   3rd Qu.:2.000  
+##  Mean   : 500.5                     Mean   :40.54   Mean   :1.032  
+##  3rd Qu.: 750.2                     3rd Qu.:53.00   3rd Qu.:2.000  
 ##  Max.   :1000.0                     Max.   :65.00   Max.   :6.000  
 ##        iq              psu           rep_psu      trabaja 
-##  Min.   : 48.06   Min.   :106.4   Min.   :0.000   No:472  
-##  1st Qu.: 89.29   1st Qu.:417.0   1st Qu.:0.000   Sí:528  
-##  Median : 99.72   Median :496.5   Median :0.000           
-##  Mean   : 99.32   Mean   :490.1   Mean   :0.209           
-##  3rd Qu.:108.98   3rd Qu.:559.4   3rd Qu.:0.000           
-##  Max.   :148.04   Max.   :816.9   Max.   :5.000
+##  Min.   : 51.10   Min.   :188.9   Min.   :0.000   No:516  
+##  1st Qu.: 89.64   1st Qu.:432.5   1st Qu.:0.000   Sí:484  
+##  Median : 99.84   Median :499.0   Median :0.000           
+##  Mean   : 99.64   Mean   :501.4   Mean   :0.256           
+##  3rd Qu.:109.93   3rd Qu.:575.2   3rd Qu.:0.000           
+##  Max.   :138.19   Max.   :793.2   Max.   :3.000
 ```
 
 --- .segue bg:royalblue
@@ -195,7 +195,7 @@ mean(simulados$edad)
 ```
 
 ```
-## [1] 39.825
+## [1] 40.542
 ```
 
 ---
@@ -252,7 +252,7 @@ table(simulados$nhijos)
 ```
 ## 
 ##   0   1   2   3   4   5   6 
-## 357 354 194  70  19   5   1
+## 378 333 192  76  19   1   1
 ```
 
 ```r
@@ -288,7 +288,7 @@ range(simulados$iq)
 ```
 
 ```
-## [1]  48.0643 148.0415
+## [1]  51.10007 138.18878
 ```
 Al igual que en funciones enteriores, si hay un valor NA, se entrega como resultado NA.
 
@@ -318,7 +318,7 @@ var(simulados$edad)
 ```
 
 ```
-## [1] 222.0905
+## [1] 217.9282
 ```
 Siempre cuidando de atender a los valores perdidos.
 
@@ -339,7 +339,7 @@ sqrt(var(simulados$edad))
 ```
 
 ```
-## [1] 14.9027
+## [1] 14.76239
 ```
 O con una función exclusiva para la desviación estándar.
 
@@ -364,7 +364,7 @@ quantile(simulados$edad)
 
 ```
 ##   0%  25%  50%  75% 100% 
-##   15   27   40   52   65
+##   15   28   40   53   65
 ```
 Si nos interesa algo más específico, como por ejemplo el percentil 27, 54 y 81:
 
@@ -380,3 +380,162 @@ quantile(habilidad$aa, probs = c(0.27, 0.54, 0.81), na.rm = TRUE)
 --- .segue bg:royalblue
 # Subsetting
 
+---
+## Funciones en distintos *niveles* de un factor.
+R tiene varias formas de reportar alguna función y aplicarla a distintos niveles de una variable. En el caso de los datos simulados, si por ejemplo, interesa obtener el promedio de edad entre el grupo control y el grupo tratamiento:
+
+```r
+tapply(simulados$edad, simulados$grupo, mean)
+```
+
+```
+##     Control Tratamiento 
+##      40.904      40.180
+```
+Con las mismas consideraciones para los valores perdidos:
+
+```r
+tapply(habilidad$aa, habilidad$sexo, mean, na.rm = TRUE)
+```
+
+```
+##   Hombre    Mujer 
+## 69.92593 72.38095
+```
+
+---
+## Otra formas de hacer lo mismo.
+La función **tapply** es parte de la "familia" de funciones **apply**, cuya estructura se asemeja mucho a otros lenguajes como Python. Existen otras alternativas, con nombres más *intuitivos*, pero que en esencia hacen lo mismo.
+
+```r
+by(habilidad$aa, habilidad$sexo, mean, na.rm = TRUE)
+```
+
+```
+## habilidad$sexo: Hombre
+## [1] 69.92593
+## -------------------------------------------------------- 
+## habilidad$sexo: Mujer
+## [1] 72.38095
+```
+Noten que el tercer argumento de esta función y de **tapply** es otra función, la que se quiere aplicar a todos los niveles del segundo argumento. Por tanto, no sólo sirve para la media, sino para casi todo lo que hemos visto previamente.
+
+---
+## Escribiéndolo de manera más complicada.
+Se puede usar la estructura de *subsetting* para considerar sólo una parte de los datos. Por ejemplo, si nos interesa únicamente el promedio de aa de los hombres.
+
+```r
+mean(habilidad$aa[habilidad$sexo=="Hombre"], na.rm = TRUE)
+```
+
+```
+## [1] 69.92593
+```
+Luego, si queremos conocer la desviación estándar, en la misma variable, pero para las mujeres:
+
+```r
+sd(habilidad$aa[habilidad$sexo=="Mujer"], na.rm = TRUE)
+```
+
+```
+## [1] 18.02353
+```
+
+---
+## Utilizar fórmulas.
+Algunas funciones nos piden como primer argumento una fórmula, con la siguiente estructura:
+$$ Y \sim X$$
+donde $Y$ es una variable numérica y $X$ es un factor. La virgulilla se hace con la tecla Alt derecha + 4.
+
+El mismo ejemplo anterior:
+
+```r
+aggregate(habilidad$aa ~ habilidad$sexo, FUN = mean, na.rm=TRUE)
+```
+
+```
+##   habilidad$sexo habilidad$aa
+## 1         Hombre     69.92593
+## 2          Mujer     72.38095
+```
+
+---
+## Graficando.
+
+
+```r
+boxplot(habilidad$aa~habilidad$sexo, na.rm=TRUE)
+```
+
+![plot of chunk unnamed-chunk-31](figure/unnamed-chunk-31-1.png)
+
+---
+## Opciones graficas.
+
+```r
+boxplot(habilidad$aa~habilidad$sexo, na.rm=TRUE, main = "Puntajes de AA, por sexo.",
+        ylab = "Puntaje AA", col = c("gold", "blue"))
+```
+
+![plot of chunk unnamed-chunk-32](figure/unnamed-chunk-32-1.png)
+
+--- .segue bg:royalblue
+# Incorporando paquetes.
+
+---
+## Descriptivos, con psych
+En caso de necesitar varios descriptivos al mismo tiempo, podríamos escribir una función que automatice el proceso, o bien instalar un paquete que la incluya.
+
+```r
+install.packages("psych", repos = 'https://dirichlet.mat.puc.cl/')
+```
+
+```
+## Installing package into '/usr/local/lib/R/site-library'
+## (as 'lib' is unspecified)
+```
+
+```r
+library(psych)
+```
+Probemos la función **describe** con la variable edpad del dataframe [habilidad]
+
+```r
+describe(habilidad$edpad)
+```
+
+```
+##    vars  n  mean  sd median trimmed  mad min max range skew kurtosis   se
+## X1    1 47 13.72 2.8     13   13.64 2.97   9  20    11  0.3    -0.74 0.41
+```
+
+---
+Podemos agregar como argumento únicamente el nombre del *dataframe*, para que nos entregue los descriptivos de topdas las variables.
+
+```r
+describe(simulados)
+```
+
+```
+##          vars    n   mean     sd median trimmed    mad    min     max
+## id          1 1000 500.50 288.82 500.50  500.50 370.65   1.00 1000.00
+## grupo*      2 1000   1.50   0.50   1.50    1.50   0.74   1.00    2.00
+## edad        3 1000  40.54  14.76  40.00   40.57  19.27  15.00   65.00
+## nhijos      4 1000   1.03   1.04   1.00    0.89   1.48   0.00    6.00
+## iq          5 1000  99.64  14.70  99.84   99.71  15.01  51.10  138.19
+## psu         6 1000 501.43 105.00 498.97  501.63 105.10 188.88  793.25
+## rep_psu     7 1000   0.26   0.58   0.00    0.12   0.00   0.00    3.00
+## trabaja*    8 1000   1.48   0.50   1.00    1.48   0.00   1.00    2.00
+##           range  skew kurtosis   se
+## id       999.00  0.00    -1.20 9.13
+## grupo*     1.00  0.00    -2.00 0.02
+## edad      50.00  0.00    -1.21 0.47
+## nhijos     6.00  0.90     0.45 0.03
+## iq        87.09 -0.05    -0.21 0.46
+## psu      604.37  0.01    -0.13 3.32
+## rep_psu    3.00  2.45     5.94 0.02
+## trabaja*   1.00  0.06    -2.00 0.02
+```
+
+--- .segue bg:royalblue
+# ¿Preguntas?

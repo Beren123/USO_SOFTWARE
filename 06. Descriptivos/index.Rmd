@@ -214,3 +214,81 @@ quantile(habilidad$aa, probs = c(0.27, 0.54, 0.81), na.rm = TRUE)
 --- .segue bg:royalblue
 # Subsetting
 
+---
+## Funciones en distintos *niveles* de un factor.
+R tiene varias formas de reportar alguna función y aplicarla a distintos niveles de una variable. En el caso de los datos simulados, si por ejemplo, interesa obtener el promedio de edad entre el grupo control y el grupo tratamiento:
+```{r}
+tapply(simulados$edad, simulados$grupo, mean)
+```
+Con las mismas consideraciones para los valores perdidos:
+```{r}
+tapply(habilidad$aa, habilidad$sexo, mean, na.rm = TRUE)
+```
+
+---
+## Otra formas de hacer lo mismo.
+La función **tapply** es parte de la "familia" de funciones **apply**, cuya estructura se asemeja mucho a otros lenguajes como Python. Existen otras alternativas, con nombres más *intuitivos*, pero que en esencia hacen lo mismo.
+```{r}
+by(habilidad$aa, habilidad$sexo, mean, na.rm = TRUE)
+```
+Noten que el tercer argumento de esta función y de **tapply** es otra función, la que se quiere aplicar a todos los niveles del segundo argumento. Por tanto, no sólo sirve para la media, sino para casi todo lo que hemos visto previamente.
+
+---
+## Escribiéndolo de manera más complicada.
+Se puede usar la estructura de *subsetting* para considerar sólo una parte de los datos. Por ejemplo, si nos interesa únicamente el promedio de aa de los hombres.
+```{r}
+mean(habilidad$aa[habilidad$sexo=="Hombre"], na.rm = TRUE)
+```
+Luego, si queremos conocer la desviación estándar, en la misma variable, pero para las mujeres:
+```{r}
+sd(habilidad$aa[habilidad$sexo=="Mujer"], na.rm = TRUE)
+```
+
+---
+## Utilizar fórmulas.
+Algunas funciones nos piden como primer argumento una fórmula, con la siguiente estructura:
+$$ Y \sim X$$
+donde $Y$ es una variable numérica y $X$ es un factor. La virgulilla se hace con la tecla Alt derecha + 4.
+
+El mismo ejemplo anterior:
+```{r}
+aggregate(habilidad$aa ~ habilidad$sexo, FUN = mean, na.rm=TRUE)
+```
+
+---
+## Graficando.
+
+```{r}
+boxplot(habilidad$aa~habilidad$sexo, na.rm=TRUE)
+```
+
+---
+## Opciones graficas.
+```{r}
+boxplot(habilidad$aa~habilidad$sexo, na.rm=TRUE, main = "Puntajes de AA, por sexo.",
+        ylab = "Puntaje AA", col = c("gold", "blue"))
+```
+
+--- .segue bg:royalblue
+# Incorporando paquetes.
+
+---
+## Descriptivos, con psych
+En caso de necesitar varios descriptivos al mismo tiempo, podríamos escribir una función que automatice el proceso, o bien instalar un paquete que la incluya.
+```{r}
+install.packages("psych", repos = 'https://dirichlet.mat.puc.cl/')
+library(psych)
+```
+Probemos la función **describe** con la variable edpad del dataframe [habilidad]
+```{r}
+describe(habilidad$edpad)
+```
+
+---
+Podemos agregar como argumento únicamente el nombre del *dataframe*, para que nos entregue los descriptivos de topdas las variables.
+```{r}
+describe(simulados)
+```
+
+--- .segue bg:royalblue
+# ¿Preguntas?
