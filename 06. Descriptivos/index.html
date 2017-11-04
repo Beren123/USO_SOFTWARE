@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Estadística Descriptiva</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Estadística Descriptiva">
+  <meta name="author" content="Valentín Vergara Hidd">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/quiz/css/demo.css"></link>
+<link rel=stylesheet href="libraries/widgets/bootstrap/css/bootstrap.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+      <slide class="nobackground">
+    <article class="flexbox vcenter">
+      <span>
+        <img width='300px' src="assets/img/marcaderecha.png">
+      </span>
+    </article>
+  </slide>
+    <slide class="title-slide segue nobackground">
+  <aside class="gdbar">
+    <img src="assets/img/escudoof.gif">
+  </aside>
+  <hgroup class="auto-fadein">
+    <h1>Estadística Descriptiva</h1>
+    <h2>Algunas medidas usando R</h2>
+    <p>Valentín Vergara Hidd<br/>Uso de Software en Investigación Social</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Estadísticos Descriptivos</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Vamos a trabajar con los estadísticos descriptivos básicos que se utilizan usualmente como paso previo en un análisis de datos. Por tanto, no sólo utilizaremos <em>medidas</em>, sino que también algunos gráficos y funciones de <em>subsetting</em> nque nos permitirán manejar de mejor forma los datos.</p>
+
+<p>Vamos a trabajar con las siguientes medidas:</p>
+
+<ol>
+<li>Tendencia Central: moda, mediana y media aritmética.</li>
+<li>Dispersión: Rango, varianza, desviación estándar.</li>
+<li>Posición: percentiles.</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-2" style="background:royalblue;">
+  <hgroup>
+    <h1>Creación de variables</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Variables simuladas.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Vamos a simular algunas variables, para tener control sobre sus atributos:</p>
+
+<pre><code class="r">simulados&lt;-data.frame(id=1:1000,
+                      grupo = c(rep(&quot;Tratamiento&quot;,500), rep(&quot;Control&quot;, 500)),
+                      edad = sample(15:65,1000,replace = TRUE),
+                      nhijos = rpois(1000,1.1),
+                      iq = rnorm(1000, mean = 100, sd = 15),
+                      psu = rnorm(1000, mean = 500, sd = 110),
+                      rep_psu = rgeom(1000, 0.8),
+                      trabaja = sample(c(&quot;Sí&quot;, &quot;No&quot;), 1000, replace = TRUE))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <article data-timings="">
+    <p>Vamos a verificar la estructura del nuevo <em>dataframe</em> creado.</p>
+
+<pre><code class="r">str(simulados)
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    1000 obs. of  8 variables:
+##  $ id     : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ grupo  : Factor w/ 2 levels &quot;Control&quot;,&quot;Tratamiento&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ edad   : int  24 54 43 24 15 33 54 27 18 55 ...
+##  $ nhijos : int  1 1 1 2 2 0 0 0 0 0 ...
+##  $ iq     : num  56.6 93 101.1 108.8 120.2 ...
+##  $ psu    : num  595 581 325 516 390 ...
+##  $ rep_psu: int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ trabaja: Factor w/ 2 levels &quot;No&quot;,&quot;Sí&quot;: 2 1 2 1 1 1 1 1 2 1 ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <article data-timings="">
+    <p>También podemos ver las primeras diez observaciones</p>
+
+<pre><code class="r">head(simulados, 10)
+</code></pre>
+
+<pre><code>##    id       grupo edad nhijos        iq      psu rep_psu trabaja
+## 1   1 Tratamiento   24      1  56.63805 595.0977       0      Sí
+## 2   2 Tratamiento   54      1  93.02590 580.8767       0      No
+## 3   3 Tratamiento   43      1 101.06454 324.9841       0      Sí
+## 4   4 Tratamiento   24      2 108.81656 515.7536       0      No
+## 5   5 Tratamiento   15      2 120.21654 389.5970       0      No
+## 6   6 Tratamiento   33      0 103.65279 331.7333       0      No
+## 7   7 Tratamiento   54      0  81.84668 530.7611       0      No
+## 8   8 Tratamiento   27      0 110.11550 365.4292       0      No
+## 9   9 Tratamiento   18      0 100.39803 356.1599       0      Sí
+## 10 10 Tratamiento   55      0 105.32623 450.8300       0      No
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Importar datos</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Como segundo <em>dataframe</em>, vamos a usar los datos de habilidad académica (que ya han trabajado en las asaignaturas de análisis de datos) que están disponibles en INFODA como [BASE.txt].</p>
+
+<p>Dado que es un archivo de texto plano y que no tiene separadores, vamos a usar la función <strong>read.fwf</strong> (<em>fixed width file</em>).</p>
+
+<pre><code class="r">habilidad&lt;-read.fwf(&quot;./BASE.TXT&quot;, widths = c(2,2,2,1,1,1,1,1), 
+          col.names = c(&quot;id&quot;, &quot;aa&quot;, &quot;edpad&quot;, &quot;motivacion&quot;, &quot;evaluacion&quot;, 
+                        &quot;religion&quot;, &quot;sexo&quot;, &quot;ubicacion&quot;))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <article data-timings="">
+    <p>Luego, convertiremos algunas variables a <em>factor</em>.</p>
+
+<pre><code class="r">habilidad$motivacion&lt;-factor(habilidad$motivacion, levels = c(0,1,2), 
+                             labels = c(&quot;Baja&quot;, &quot;Media&quot;, &quot;Alta&quot;))
+
+habilidad$evaluacion&lt;-factor(habilidad$evaluacion, levels = c(0,1,2), 
+                             labels = c(&quot;No ingresa&quot;, &quot;Indeciso&quot;, &quot;Ingresa&quot;))
+
+habilidad$religion&lt;-factor(habilidad$religion, levels = c(0,1,2), 
+                           labels = c(&quot;Católico&quot;, &quot;Protestante&quot;, &quot;Judio&quot;))
+
+habilidad$sexo&lt;-factor(habilidad$sexo, levels = c(0,1), 
+                       labels = c(&quot;Hombre&quot;, &quot;Mujer&quot;))
+
+habilidad$ubicacion&lt;-factor(habilidad$ubicacion, levels = c(0,1), 
+                            labels = c(&quot;Urbano&quot;, &quot;Rural&quot;))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <article data-timings="">
+    <p>Para ver un resultado general:</p>
+
+<pre><code class="r">str(habilidad)
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    50 obs. of  8 variables:
+##  $ id        : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ aa        : int  NA 46 57 94 82 59 61 29 36 91 ...
+##  $ edpad     : int  19 12 15 18 13 12 12 9 13 16 ...
+##  $ motivacion: Factor w/ 3 levels &quot;Baja&quot;,&quot;Media&quot;,..: 2 1 2 3 3 1 2 1 2 3 ...
+##  $ evaluacion: Factor w/ 3 levels &quot;No ingresa&quot;,&quot;Indeciso&quot;,..: 3 1 2 3 2 1 3 1 2 3 ...
+##  $ religion  : Factor w/ 3 levels &quot;Católico&quot;,&quot;Protestante&quot;,..: 1 1 1 2 2 3 1 2 1 2 ...
+##  $ sexo      : Factor w/ 2 levels &quot;Hombre&quot;,&quot;Mujer&quot;: 1 1 1 2 2 1 1 2 1 2 ...
+##  $ ubicacion : Factor w/ 2 levels &quot;Urbano&quot;,&quot;Rural&quot;: 2 1 1 2 2 1 1 1 1 1 ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <article data-timings="">
+    <p>Para ver las primeras 10 observaciones:</p>
+
+<pre><code class="r">head(habilidad, 10)
+</code></pre>
+
+<pre><code>##    id aa edpad motivacion evaluacion    religion   sexo ubicacion
+## 1   1 NA    19      Media    Ingresa    Católico Hombre     Rural
+## 2   2 46    12       Baja No ingresa    Católico Hombre    Urbano
+## 3   3 57    15      Media   Indeciso    Católico Hombre    Urbano
+## 4   4 94    18       Alta    Ingresa Protestante  Mujer     Rural
+## 5   5 82    13       Alta   Indeciso Protestante  Mujer     Rural
+## 6   6 59    12       Baja No ingresa       Judio Hombre    Urbano
+## 7   7 61    12      Media    Ingresa    Católico Hombre    Urbano
+## 8   8 29     9       Baja No ingresa Protestante  Mujer    Urbano
+## 9   9 36    13      Media   Indeciso    Católico Hombre    Urbano
+## 10 10 91    16       Alta    Ingresa Protestante  Mujer    Urbano
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-10" style="background:royalblue;">
+  <hgroup>
+    <h1>Descripción de variables</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Descripción general</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Consideremos los datos simulados. Para una descripción general, utilizamos la función <strong>summary</strong></p>
+
+<pre><code class="r">summary(simulados)
+</code></pre>
+
+<pre><code>##        id                 grupo          edad           nhijos     
+##  Min.   :   1.0   Control    :500   Min.   :15.00   Min.   :0.000  
+##  1st Qu.: 250.8   Tratamiento:500   1st Qu.:27.00   1st Qu.:0.000  
+##  Median : 500.5                     Median :40.00   Median :1.000  
+##  Mean   : 500.5                     Mean   :39.83   Mean   :1.059  
+##  3rd Qu.: 750.2                     3rd Qu.:52.00   3rd Qu.:2.000  
+##  Max.   :1000.0                     Max.   :65.00   Max.   :6.000  
+##        iq              psu           rep_psu      trabaja 
+##  Min.   : 48.06   Min.   :106.4   Min.   :0.000   No:472  
+##  1st Qu.: 89.29   1st Qu.:417.0   1st Qu.:0.000   Sí:528  
+##  Median : 99.72   Median :496.5   Median :0.000           
+##  Mean   : 99.32   Mean   :490.1   Mean   :0.209           
+##  3rd Qu.:108.98   3rd Qu.:559.4   3rd Qu.:0.000           
+##  Max.   :148.04   Max.   :816.9   Max.   :5.000
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-12" style="background:royalblue;">
+  <hgroup>
+    <h2>Medidas de tendencia central.</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Media Aritmética.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Para trabajar cualquier variable, se debe considerar que hay que referenciar el <em>objeto</em> del <em>dataframe</em>, para luego identificar la variable. Por ejemplo, si quisiéramos obtener el promedio de la variable edad en los datos simulados:</p>
+
+<pre><code class="r">mean(simulados$edad)
+</code></pre>
+
+<pre><code>## [1] 39.825
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <article data-timings="">
+    <p>¿Qué pasa si entre los datos hay algún valor perdido (NA para R)?</p>
+
+<pre><code class="r">mean(habilidad$aa)
+</code></pre>
+
+<pre><code>## [1] NA
+</code></pre>
+
+<p>Para solucionar esto, agregamos un segundo argumento a la función.</p>
+
+<pre><code class="r">mean(habilidad$aa, na.rm = TRUE)
+</code></pre>
+
+<pre><code>## [1] 71
+</code></pre>
+
+<p>Con este argumento, se excluyen del cálculo los casos donde hay valores perdidos.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Mediana</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>La función <strong>median</strong> permite obtener la mediana; y su funcionamiento es más o menos similar a la media.</p>
+
+<pre><code class="r">median(simulados$edad)
+</code></pre>
+
+<pre><code>## [1] 40
+</code></pre>
+
+<p>Para los valores perdidos:</p>
+
+<pre><code class="r">median(habilidad$aa, na.rm = TRUE)
+</code></pre>
+
+<pre><code>## [1] 72.5
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Moda</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>R no posee una función para calcular directamente la moda, por lo que en caso de necesitarla, podemos obtener las frecuencias de cada categoría, dentro de una variable determinada. Por ejemplo:</p>
+
+<pre><code class="r">table(simulados$nhijos)
+</code></pre>
+
+<pre><code>## 
+##   0   1   2   3   4   5   6 
+## 357 354 194  70  19   5   1
+</code></pre>
+
+<pre><code class="r">table(habilidad$edpad)
+</code></pre>
+
+<pre><code>## 
+##  9 10 11 12 13 14 15 16 17 18 19 20 
+##  3  2  5  9  5  5  5  5  3  2  2  1
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-17" style="background:;">
+  <article data-timings="">
+    <p>También podemos graficar lo anterior:</p>
+
+<pre><code class="r">plot(table(simulados$nhijos), main = &quot;Distribución del número de hijos&quot;,
+     xlab = &quot;Número de hijos&quot;, ylab = &quot;Frecuencias&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-15-1.png" alt="plot of chunk unnamed-chunk-15"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-18" style="background:royalblue;">
+  <hgroup>
+    <h2>Medidas de dispersión</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Rango</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>La función <strong>range</strong> entrega los valores mínimo y máximo de una variable</p>
+
+<pre><code class="r">range(simulados$iq)
+</code></pre>
+
+<pre><code>## [1]  48.0643 148.0415
+</code></pre>
+
+<p>Al igual que en funciones enteriores, si hay un valor NA, se entrega como resultado NA.</p>
+
+<pre><code class="r">range(habilidad$aa)
+</code></pre>
+
+<pre><code>## [1] NA NA
+</code></pre>
+
+<p>La solución, igual que antes:</p>
+
+<pre><code class="r">range(habilidad$aa, na.rm = TRUE)
+</code></pre>
+
+<pre><code>## [1] 29 99
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>Varianza.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>En este caso, la función <strong>var</strong> es todo lo que necesitamos.</p>
+
+<pre><code class="r">var(simulados$edad)
+</code></pre>
+
+<pre><code>## [1] 222.0905
+</code></pre>
+
+<p>Siempre cuidando de atender a los valores perdidos.</p>
+
+<pre><code class="r">var(habilidad$aa, na.rm = TRUE)
+</code></pre>
+
+<pre><code>## [1] 305.9149
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Desviación Estándar.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Sabemos que \(de = \sqrt{var}\). Por tanto, podríamos obtener las desviaciones estándar anteriores utilizando la función <strong>sqrt</strong></p>
+
+<pre><code class="r">sqrt(var(simulados$edad))
+</code></pre>
+
+<pre><code>## [1] 14.9027
+</code></pre>
+
+<p>O con una función exclusiva para la desviación estándar.</p>
+
+<pre><code class="r">sd(habilidad$aa, na.rm = TRUE)
+</code></pre>
+
+<pre><code>## [1] 17.49042
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-22" style="background:royalblue;">
+  <hgroup>
+    <h2>Medidas de posición.</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>Percentiles.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>En R, sólo existe la función <strong>quantile</strong>, que nos entrega la siguiente información.</p>
+
+<pre><code class="r">quantile(simulados$edad)
+</code></pre>
+
+<pre><code>##   0%  25%  50%  75% 100% 
+##   15   27   40   52   65
+</code></pre>
+
+<p>Si nos interesa algo más específico, como por ejemplo el percentil 27, 54 y 81:</p>
+
+<pre><code class="r">quantile(habilidad$aa, probs = c(0.27, 0.54, 0.81), na.rm = TRUE)
+</code></pre>
+
+<pre><code>## 27% 54% 81% 
+##  59  74  88
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-24" style="background:royalblue;">
+  <hgroup>
+    <h1>Subsetting</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Estadísticos Descriptivos'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Creación de variables'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Variables simuladas.'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='NA'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='NA'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Importar datos'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='NA'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='NA'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='NA'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Descripción de variables'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Descripción general'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Medidas de tendencia central.'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='Media Aritmética.'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='NA'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Mediana'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Moda'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='NA'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Medidas de dispersión'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Rango'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='Varianza.'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Desviación Estándar.'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='Medidas de posición.'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='Percentiles.'>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='Subsetting'>
+         24
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  <script src="libraries/widgets/quiz/js/jquery.quiz.js"></script>
+<script src="libraries/widgets/quiz/js/mustache.min.js"></script>
+<script src="libraries/widgets/quiz/js/quiz-app.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootstrap.min.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootbox.min.js"></script>
+
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<script>  
+  $(function (){ 
+    $("#example").popover(); 
+    $("[rel='tooltip']").tooltip(); 
+  });  
+  </script>  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

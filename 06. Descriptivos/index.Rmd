@@ -1,0 +1,216 @@
+---
+title       : Estadística Descriptiva
+subtitle    : Algunas medidas usando R
+author      : Valentín Vergara Hidd
+job         : Uso de Software en Investigación Social
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax, quiz, bootstrap]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+logo        : escudoof.gif
+biglogo     : marcaderecha.png
+---
+
+## Estadísticos Descriptivos
+Vamos a trabajar con los estadísticos descriptivos básicos que se utilizan usualmente como paso previo en un análisis de datos. Por tanto, no sólo utilizaremos *medidas*, sino que también algunos gráficos y funciones de *subsetting* nque nos permitirán manejar de mejor forma los datos.
+
+Vamos a trabajar con las siguientes medidas:
+
+1. Tendencia Central: moda, mediana y media aritmética.
+2. Dispersión: Rango, varianza, desviación estándar.
+3. Posición: percentiles.
+
+--- .segue bg:royalblue
+
+# Creación de variables
+
+---
+## Variables simuladas.
+Vamos a simular algunas variables, para tener control sobre sus atributos:
+
+```{r}
+simulados<-data.frame(id=1:1000,
+                      grupo = c(rep("Tratamiento",500), rep("Control", 500)),
+                      edad = sample(15:65,1000,replace = TRUE),
+                      nhijos = rpois(1000,1.1),
+                      iq = rnorm(1000, mean = 100, sd = 15),
+                      psu = rnorm(1000, mean = 500, sd = 110),
+                      rep_psu = rgeom(1000, 0.8),
+                      trabaja = sample(c("Sí", "No"), 1000, replace = TRUE))
+
+```
+
+---
+Vamos a verificar la estructura del nuevo *dataframe* creado.
+```{r}
+str(simulados)
+```
+
+---
+También podemos ver las primeras diez observaciones
+```{r}
+head(simulados, 10)
+```
+
+---
+## Importar datos
+Como segundo *dataframe*, vamos a usar los datos de habilidad académica (que ya han trabajado en las asaignaturas de análisis de datos) que están disponibles en INFODA como [BASE.txt].
+
+Dado que es un archivo de texto plano y que no tiene separadores, vamos a usar la función **read.fwf** (*fixed width file*).
+```{r}
+habilidad<-read.fwf("./BASE.TXT", widths = c(2,2,2,1,1,1,1,1), 
+          col.names = c("id", "aa", "edpad", "motivacion", "evaluacion", 
+                        "religion", "sexo", "ubicacion"))
+```
+
+---
+Luego, convertiremos algunas variables a *factor*.
+
+```{r}
+habilidad$motivacion<-factor(habilidad$motivacion, levels = c(0,1,2), 
+                             labels = c("Baja", "Media", "Alta"))
+
+habilidad$evaluacion<-factor(habilidad$evaluacion, levels = c(0,1,2), 
+                             labels = c("No ingresa", "Indeciso", "Ingresa"))
+
+habilidad$religion<-factor(habilidad$religion, levels = c(0,1,2), 
+                           labels = c("Católico", "Protestante", "Judio"))
+
+habilidad$sexo<-factor(habilidad$sexo, levels = c(0,1), 
+                       labels = c("Hombre", "Mujer"))
+
+habilidad$ubicacion<-factor(habilidad$ubicacion, levels = c(0,1), 
+                            labels = c("Urbano", "Rural"))
+```
+
+---
+Para ver un resultado general:
+```{r}
+str(habilidad)
+```
+
+---
+Para ver las primeras 10 observaciones:
+```{r}
+head(habilidad, 10)
+```
+
+--- .segue bg:royalblue
+# Descripción de variables
+
+---
+## Descripción general
+Consideremos los datos simulados. Para una descripción general, utilizamos la función **summary**
+```{r}
+summary(simulados)
+```
+
+--- .segue bg:royalblue
+## Medidas de tendencia central.
+
+---
+## Media Aritmética.
+Para trabajar cualquier variable, se debe considerar que hay que referenciar el *objeto* del *dataframe*, para luego identificar la variable. Por ejemplo, si quisiéramos obtener el promedio de la variable edad en los datos simulados:
+```{r}
+mean(simulados$edad)
+```
+
+---
+¿Qué pasa si entre los datos hay algún valor perdido (NA para R)?
+```{r}
+mean(habilidad$aa)
+```
+Para solucionar esto, agregamos un segundo argumento a la función.
+```{r}
+mean(habilidad$aa, na.rm = TRUE)
+```
+Con este argumento, se excluyen del cálculo los casos donde hay valores perdidos.
+
+---
+## Mediana
+La función **median** permite obtener la mediana; y su funcionamiento es más o menos similar a la media.
+```{r}
+median(simulados$edad)
+```
+
+Para los valores perdidos:
+```{r}
+median(habilidad$aa, na.rm = TRUE)
+```
+
+---
+## Moda
+R no posee una función para calcular directamente la moda, por lo que en caso de necesitarla, podemos obtener las frecuencias de cada categoría, dentro de una variable determinada. Por ejemplo:
+```{r}
+table(simulados$nhijos)
+
+table(habilidad$edpad)
+```
+
+---
+También podemos graficar lo anterior:
+
+```{r}
+plot(table(simulados$nhijos), main = "Distribución del número de hijos",
+     xlab = "Número de hijos", ylab = "Frecuencias")
+```
+
+--- .segue bg:royalblue
+## Medidas de dispersión
+
+---
+## Rango
+La función **range** entrega los valores mínimo y máximo de una variable
+```{r}
+range(simulados$iq)
+```
+Al igual que en funciones enteriores, si hay un valor NA, se entrega como resultado NA.
+```{r}
+range(habilidad$aa)
+```
+La solución, igual que antes:
+```{r}
+range(habilidad$aa, na.rm = TRUE)
+```
+
+---
+## Varianza.
+En este caso, la función **var** es todo lo que necesitamos.
+```{r}
+var(simulados$edad)
+```
+Siempre cuidando de atender a los valores perdidos.
+```{r}
+var(habilidad$aa, na.rm = TRUE)
+```
+
+---
+## Desviación Estándar.
+Sabemos que $de = \sqrt{var}$. Por tanto, podríamos obtener las desviaciones estándar anteriores utilizando la función **sqrt**
+```{r}
+sqrt(var(simulados$edad))
+```
+O con una función exclusiva para la desviación estándar.
+```{r}
+sd(habilidad$aa, na.rm = TRUE)
+```
+
+--- .segue bg:royalblue
+## Medidas de posición.
+
+---
+## Percentiles.
+En R, sólo existe la función **quantile**, que nos entrega la siguiente información.
+```{r}
+quantile(simulados$edad)
+```
+Si nos interesa algo más específico, como por ejemplo el percentil 27, 54 y 81:
+```{r}
+quantile(habilidad$aa, probs = c(0.27, 0.54, 0.81), na.rm = TRUE)
+```
+
+--- .segue bg:royalblue
+# Subsetting
+
