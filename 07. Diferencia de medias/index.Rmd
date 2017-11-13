@@ -1,0 +1,155 @@
+---
+title       : Diferencias de Medias
+subtitle    : Dos medias y $k$ medias, con supuestos.
+author      : Valentín Vergara Hidd
+job         : Uso de Software en Investigación Social
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax, quiz, bootstrap]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+logo        : escudoof.gif
+biglogo     : marcaderecha.png
+
+--- 
+## Comparar grupos.
+En estas sesiones vamos a trabajar en comparaciones de medias. En términos generales, trabajaremos con variables dependientes $Y$:
+$$ Y \in \mathbb{R} \; | \; \infty^{-} < Y < \infty^{+}$$
+y con variables independientes $X$:
+$$ X \in \mathbb{Z} \; | \; \infty^{-} < Y < \infty^{+}.$$
+
+Asumimos además que $\mu$ corresponde a la media artimética poblacional y $\sigma^{2}$ a la varianza de la población.
+
+
+--- .segue bg:royalblue
+# Datos para esta clase.
+
+---
+## Datos simulados: fumadores
+Vamos a simular datos sobre la edad de muerte de un grupo de 35 personas, jun to con optras características relevantes.
+```{r}
+fumadores<-data.frame(id = 1:36,
+                edad_muerte = c(sample(70:90,18,replace = TRUE), sample(60:80, 18, 
+                replace = TRUE)),
+                fuma = c(rep("No", 18), rep("Sí",18)),
+                sexo = sample(c("Hombre", "Mujer"), 36, replace = TRUE))
+head(fumadores, 5)
+```
+
+---
+## Datos simulados: bebedores
+Simularemos ahora los datos sobre la cantidad de tragos por semana que bebían 2581 personas antes y después de un experimento en el que se les sometía a un programa de erducación sobrer los efectos del alcohol. Se midió también su editorial preferida de comics.
+```{r}
+bebedores<-data.frame(id = 1:2581,
+                editorial = sample(c("Marvel", "DC"), 2581, replace = TRUE),
+                grupo = c(rep("Tratamiento", 1200), rep("Control", 1381)),
+                tragos_pre = rpois(2581,10),
+                tragos_post = c(rpois(1200, 7), rpois(1381,10)))
+head(bebedores,5)
+```
+
+---
+## Datos reales: Simce 2016
+Leeremos el archivop [simce4_2016.xlsx], que pueden descargar de INFODA. Son los datos reales, para cada establecimiento, de sus puntajes para 4º Básico en Lectura y Matemática, además de otras variables.
+```{r}
+library(readxl)
+simce<-read_excel("./simce4_2016.xlsx")
+
+simce$dependencia<-factor(simce$dependencia, levels = c(1,2,3),
+                    labels = c("Municipal", "Particular Subvencionado", "Particular"))
+
+simce$gse<-factor(simce$gse, levels = c(1,2,3,4,5),
+                  labels = c("Bajo", "Medio Bajo", "Medio", "Medio Alto", "Alto"))
+
+simce$rural<-factor(simce$rural, levels = c(1,2),
+                    labels = c("Urbano", "Rural"))
+```
+
+---
+Posteriormente, comprobamos las variables recodificadas:
+```{r}
+head(simce)
+```
+
+--- .segue bg:royalblue
+# Diferencias de dos medias
+
+--- .segue bg:royalblue
+## Muestras independientes.
+
+---
+## Supuestos.
+
+### Variable dependiente normalmente distribuida
+Asumimos que la variable dependiente tiene una distribución **similar** a la normal en ambos niveles de la variable independiente. A pesar de esto, la prueba T es robusta para desviaciones de la distribución normal, únicamente si se garantiza que:
+$$ \frac{n_{mayor}}{n_{menor}} \leq 1,5$$
+
+### Homocedasticidad.
+Las varianzas de ambos grupos son iguales. En caso de no cumplirse este supuesto, se pueden hacer algunas correcciones que vienen  incluidas en la función del test.
+
+---
+## Error Estándar.
+Recordemos que para la variable aleatoria $X$, la **varianza de su distribución de muestreo** equivale a:
+$$ \hat{\sigma}^{2}_{\overline{X}} = \frac{\sigma^{2}}{n}$$
+De esta forma, la diferencia entre dos grupos tiene el siguiente **error estándar**
+$$ \hat{\sigma}_{\overline{X}_{2}- \overline{X}_{1}} =  \sqrt{\hat{\sigma}^{2}_{\overline{X}}} = \sqrt{\frac{\sigma^{2}_{1}}{n_{1}} + \frac{\sigma^{2}_{2}}{n_{2}}}$$
+Estas medidas son relevantes para construir los **intervalos de confianza**.
+
+---
+## Ejemplo: fumadores
+### Verificando supuestos.
+Para conocer si una variable distribuye normal, utilizaremos el test *shapiro-wilk*
+```{r}
+shapiro.test(fumadores$edad_muerte)
+```
+La variable aparentemente es normal, pero debemos asegurarnos que lo sea para cada **nivel** de la variable [fuma]
+
+---
+
+```{r}
+tapply(fumadores$edad_muerte, fumadores$fuma, shapiro.test)
+```
+
+---
+Si no obtenemos normalidad, podemos verificar el *ratio* entre el $n$ de ambos grupos:
+```{r}
+length(fumadores$fuma[fumadores$fuma=="Sí"])/length(fumadores$fuma[fumadores$fuma=="No"])
+```
+
+### Homocedasticidad.
+Para verificar este supuesto, utilizamos la prueba de Bartlett, cuya hipótesis nula es:
+$$ H_{0}: \; \sigma^{2}_{fuma} - \sigma^{2}_{no\;  fuma} = 0 $$
+```{r}
+bartlett.test(fumadores$edad_muerte~fumadores$fuma)
+```
+
+---
+## T-test
+La hipótesis nula es:
+$$ H_{0}: \; \overline{Y}_{fuma} - \overline{Y}_{no\;  fuma} = 0 $$
+Veamos primero los promedios de edad de muerte para ambos grupos:
+```{r}
+tapply(fumadores$edad_muerte, fumadores$fuma, mean)
+```
+Al parecer, la diferencia no es cero.
+
+---
+Probemos que esta diferencia efectivamente es distinta de cero.
+```{r}
+t.test(edad_muerte~fuma, data = fumadores, var.equal=TRUE)
+```
+
+---
+## Alternativa no-paramétrica.
+Si no logramos cumplir el primer supuesto, ya sea porque la variable no distribuye normal, o porquer la razón entre el tamaño de ambos grupos es mayor a 1,5; se puede utilizar una prueba no-paramétrica.
+
+La prueba de Mann Whitney compara **medianas** con la siguiente hipótesis nula:
+$$ H_{0}: \; Y_{fuma} - Y_{no\;  fuma} = 0 $$
+
+---
+La función en R:
+
+```{r}
+wilcox.test(edad_muerte~fuma, data=fumadores)
+```

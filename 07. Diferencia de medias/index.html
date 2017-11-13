@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Diferencias de Medias</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Diferencias de Medias">
+  <meta name="author" content="Valentín Vergara Hidd">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/quiz/css/demo.css"></link>
+<link rel=stylesheet href="libraries/widgets/bootstrap/css/bootstrap.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+      <slide class="nobackground">
+    <article class="flexbox vcenter">
+      <span>
+        <img width='300px' src="assets/img/marcaderecha.png">
+      </span>
+    </article>
+  </slide>
+    <slide class="title-slide segue nobackground">
+  <aside class="gdbar">
+    <img src="assets/img/escudoof.gif">
+  </aside>
+  <hgroup class="auto-fadein">
+    <h1>Diferencias de Medias</h1>
+    <h2>Dos medias y $k$ medias, con supuestos.</h2>
+    <p>Valentín Vergara Hidd<br/>Uso de Software en Investigación Social</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Comparar grupos.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>En estas sesiones vamos a trabajar en comparaciones de medias. En términos generales, trabajaremos con variables dependientes \(Y\):
+\[ Y \in \mathbb{R} \; | \; \infty^{-} < Y < \infty^{+}\]
+y con variables independientes \(X\):
+\[ X \in \mathbb{Z} \; | \; \infty^{-} < Y < \infty^{+}.\]</p>
+
+<p>Asumimos además que \(\mu\) corresponde a la media artimética poblacional y \(\sigma^{2}\) a la varianza de la población.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-2" style="background:royalblue;">
+  <hgroup>
+    <h1>Datos para esta clase.</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Datos simulados: fumadores</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Vamos a simular datos sobre la edad de muerte de un grupo de 35 personas, jun to con optras características relevantes.</p>
+
+<pre><code class="r">fumadores&lt;-data.frame(id = 1:36,
+                edad_muerte = c(sample(70:90,18,replace = TRUE), sample(60:80, 18, 
+                replace = TRUE)),
+                fuma = c(rep(&quot;No&quot;, 18), rep(&quot;Sí&quot;,18)),
+                sexo = sample(c(&quot;Hombre&quot;, &quot;Mujer&quot;), 36, replace = TRUE))
+head(fumadores, 5)
+</code></pre>
+
+<pre><code>##   id edad_muerte fuma   sexo
+## 1  1          85   No  Mujer
+## 2  2          85   No Hombre
+## 3  3          87   No Hombre
+## 4  4          76   No  Mujer
+## 5  5          82   No  Mujer
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Datos simulados: bebedores</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Simularemos ahora los datos sobre la cantidad de tragos por semana que bebían 2581 personas antes y después de un experimento en el que se les sometía a un programa de erducación sobrer los efectos del alcohol. Se midió también su editorial preferida de comics.</p>
+
+<pre><code class="r">bebedores&lt;-data.frame(id = 1:2581,
+                editorial = sample(c(&quot;Marvel&quot;, &quot;DC&quot;), 2581, replace = TRUE),
+                grupo = c(rep(&quot;Tratamiento&quot;, 1200), rep(&quot;Control&quot;, 1381)),
+                tragos_pre = rpois(2581,10),
+                tragos_post = c(rpois(1200, 7), rpois(1381,10)))
+head(bebedores,5)
+</code></pre>
+
+<pre><code>##   id editorial       grupo tragos_pre tragos_post
+## 1  1        DC Tratamiento         16           9
+## 2  2    Marvel Tratamiento         15          10
+## 3  3    Marvel Tratamiento          4           6
+## 4  4    Marvel Tratamiento         12           7
+## 5  5        DC Tratamiento          8           6
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Datos reales: Simce 2016</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Leeremos el archivop [simce4_2016.xlsx], que pueden descargar de INFODA. Son los datos reales, para cada establecimiento, de sus puntajes para 4º Básico en Lectura y Matemática, además de otras variables.</p>
+
+<pre><code class="r">library(readxl)
+simce&lt;-read_excel(&quot;./simce4_2016.xlsx&quot;)
+
+simce$dependencia&lt;-factor(simce$dependencia, levels = c(1,2,3),
+                    labels = c(&quot;Municipal&quot;, &quot;Particular Subvencionado&quot;, &quot;Particular&quot;))
+
+simce$gse&lt;-factor(simce$gse, levels = c(1,2,3,4,5),
+                  labels = c(&quot;Bajo&quot;, &quot;Medio Bajo&quot;, &quot;Medio&quot;, &quot;Medio Alto&quot;, &quot;Alto&quot;))
+
+simce$rural&lt;-factor(simce$rural, levels = c(1,2),
+                    labels = c(&quot;Urbano&quot;, &quot;Rural&quot;))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <article data-timings="">
+    <p>Posteriormente, comprobamos las variables recodificadas:</p>
+
+<pre><code class="r">head(simce)
+</code></pre>
+
+<pre><code>## # A tibble: 6 x 10
+##     rbd region comuna dependencia        gse  rural nalu_lect nalu_mat
+##   &lt;dbl&gt;  &lt;dbl&gt;  &lt;chr&gt;      &lt;fctr&gt;     &lt;fctr&gt; &lt;fctr&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1     5     15  ARICA   Municipal      Medio Urbano        26       28
+## 2     8     15  ARICA   Municipal Medio Bajo Urbano         2        2
+## 3     9     15  ARICA   Municipal      Medio Urbano        26       28
+## 4    10     15  ARICA   Municipal Medio Bajo Urbano         2        2
+## 5    11     15  ARICA   Municipal Medio Bajo Urbano         2        2
+## 6    12     15  ARICA   Municipal Medio Bajo Urbano        26       28
+## # ... with 2 more variables: lect &lt;dbl&gt;, mat &lt;dbl&gt;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-7" style="background:royalblue;">
+  <hgroup>
+    <h1>Diferencias de dos medias</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-8" style="background:royalblue;">
+  <hgroup>
+    <h2>Muestras independientes.</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>Supuestos.</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>Variable dependiente normalmente distribuida</h3>
+
+<p>Asumimos que la variable dependiente tiene una distribución <strong>similar</strong> a la normal en ambos niveles de la variable independiente. A pesar de esto, la prueba T es robusta para desviaciones de la distribución normal, únicamente si se garantiza que:
+\[ \frac{n_{mayor}}{n_{menor}} \leq 1,5\]</p>
+
+<h3>Homocedasticidad.</h3>
+
+<p>Las varianzas de ambos grupos son iguales. En caso de no cumplirse este supuesto, se pueden hacer algunas correcciones que vienen  incluidas en la función del test.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Error Estándar.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Recordemos que para la variable aleatoria \(X\), la <strong>varianza de su distribución de muestreo</strong> equivale a:
+\[ \hat{\sigma}^{2}_{\overline{X}} = \frac{\sigma^{2}}{n}\]
+De esta forma, la diferencia entre dos grupos tiene el siguiente <strong>error estándar</strong>
+\[ \hat{\sigma}_{\overline{X}_{2}- \overline{X}_{1}} =  \sqrt{\hat{\sigma}^{2}_{\overline{X}}} = \sqrt{\frac{\sigma^{2}_{1}}{n_{1}} + \frac{\sigma^{2}_{2}}{n_{2}}}\]
+Estas medidas son relevantes para construir los <strong>intervalos de confianza</strong>.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Ejemplo: fumadores</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>Verificando supuestos.</h3>
+
+<p>Para conocer si una variable distribuye normal, utilizaremos el test <em>shapiro-wilk</em></p>
+
+<pre><code class="r">shapiro.test(fumadores$edad_muerte)
+</code></pre>
+
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  fumadores$edad_muerte
+## W = 0.94279, p-value = 0.06209
+</code></pre>
+
+<p>La variable aparentemente es normal, pero debemos asegurarnos que lo sea para cada <strong>nivel</strong> de la variable [fuma]</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">tapply(fumadores$edad_muerte, fumadores$fuma, shapiro.test)
+</code></pre>
+
+<pre><code>## $No
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  X[[i]]
+## W = 0.91635, p-value = 0.1114
+## 
+## 
+## $Sí
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  X[[i]]
+## W = 0.89792, p-value = 0.05287
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <article data-timings="">
+    <p>Si no obtenemos normalidad, podemos verificar el <em>ratio</em> entre el \(n\) de ambos grupos:</p>
+
+<pre><code class="r">length(fumadores$fuma[fumadores$fuma==&quot;Sí&quot;])/length(fumadores$fuma[fumadores$fuma==&quot;No&quot;])
+</code></pre>
+
+<pre><code>## [1] 1
+</code></pre>
+
+<h3>Homocedasticidad.</h3>
+
+<p>Para verificar este supuesto, utilizamos la prueba de Bartlett, cuya hipótesis nula es:
+\[ H_{0}: \; \sigma^{2}_{fuma} - \sigma^{2}_{no\;  fuma} = 0 \]</p>
+
+<pre><code class="r">bartlett.test(fumadores$edad_muerte~fumadores$fuma)
+</code></pre>
+
+<pre><code>## 
+##  Bartlett test of homogeneity of variances
+## 
+## data:  fumadores$edad_muerte by fumadores$fuma
+## Bartlett&#39;s K-squared = 1.7797, df = 1, p-value = 0.1822
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>T-test</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>La hipótesis nula es:
+\[ H_{0}: \; \overline{Y}_{fuma} - \overline{Y}_{no\;  fuma} = 0 \]
+Veamos primero los promedios de edad de muerte para ambos grupos:</p>
+
+<pre><code class="r">tapply(fumadores$edad_muerte, fumadores$fuma, mean)
+</code></pre>
+
+<pre><code>##       No       Sí 
+## 79.44444 68.61111
+</code></pre>
+
+<p>Al parecer, la diferencia no es cero.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-15" style="background:;">
+  <article data-timings="">
+    <p>Probemos que esta diferencia efectivamente es distinta de cero.</p>
+
+<pre><code class="r">t.test(edad_muerte~fuma, data = fumadores, var.equal=TRUE)
+</code></pre>
+
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  edad_muerte by fuma
+## t = 5.2667, df = 34, p-value = 7.741e-06
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##   6.653071 15.013596
+## sample estimates:
+## mean in group No mean in group Sí 
+##         79.44444         68.61111
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Alternativa no-paramétrica.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Si no logramos cumplir el primer supuesto, ya sea porque la variable no distribuye normal, o porquer la razón entre el tamaño de ambos grupos es mayor a 1,5; se puede utilizar una prueba no-paramétrica.</p>
+
+<p>La prueba de Mann Whitney compara <strong>medianas</strong> con la siguiente hipótesis nula:
+\[ H_{0}: \; Y_{fuma} - Y_{no\;  fuma} = 0 \]</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-17" style="background:;">
+  <article data-timings="">
+    <p>La función en R:</p>
+
+<pre><code class="r">wilcox.test(edad_muerte~fuma, data=fumadores)
+</code></pre>
+
+<pre><code>## Warning in wilcox.test.default(x = c(85L, 85L, 87L, 76L, 82L, 86L, 78L, :
+## cannot compute exact p-value with ties
+</code></pre>
+
+<pre><code>## 
+##  Wilcoxon rank sum test with continuity correction
+## 
+## data:  edad_muerte by fuma
+## W = 281, p-value = 0.0001734
+## alternative hypothesis: true location shift is not equal to 0
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Comparar grupos.'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Datos para esta clase.'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Datos simulados: fumadores'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Datos simulados: bebedores'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Datos reales: Simce 2016'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='NA'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Diferencias de dos medias'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Muestras independientes.'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Supuestos.'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Error Estándar.'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Ejemplo: fumadores'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='NA'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='NA'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='T-test'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='NA'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Alternativa no-paramétrica.'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='NA'>
+         17
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  <script src="libraries/widgets/quiz/js/jquery.quiz.js"></script>
+<script src="libraries/widgets/quiz/js/mustache.min.js"></script>
+<script src="libraries/widgets/quiz/js/quiz-app.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootstrap.min.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootbox.min.js"></script>
+
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<script>  
+  $(function (){ 
+    $("#example").popover(); 
+    $("[rel='tooltip']").tooltip(); 
+  });  
+  </script>  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
