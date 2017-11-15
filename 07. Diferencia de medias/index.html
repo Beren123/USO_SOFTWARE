@@ -395,6 +395,144 @@ Veamos primero los promedios de edad de muerte para ambos grupos:</p>
   <!-- Presenter Notes -->
 </slide>
 
+<slide class="segue" id="slide-18" style="background:royalblue;">
+  <hgroup>
+    <h2>Muestras dependientes</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Lógica experimental.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Una prueba de diferencia de medias para <strong>muestras dependientes</strong> considera una lógica experimental, dado que compara a cada individuo consigo mismo en un tiempo previo. Considere una variable aleatoria \(X\) en un tiempo \(t\) (medición final), lo que se estima es la siguiente diferencia.
+\[ \overline{X}_{t} - \overline{X}_{t-1} \]
+Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero como se trata de diferencias de dos medias, siempre se trabajará con dos puntos temporales.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>La función en R.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Consideremos el dataframe [bebedores], que simula los resultados de un tratamiento que busca disminuir la cantidad de tragos por semana de un grupo de personas. Debemos asegurarnos que al inicio, los grupos estén balanceados:</p>
+
+<pre><code class="r">t.test(tragos_pre~grupo, data = bebedores)
+</code></pre>
+
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  tragos_pre by grupo
+## t = -0.19854, df = 2508.3, p-value = 0.8426
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.2721842  0.2221347
+## sample estimates:
+##     mean in group Control mean in group Tratamiento 
+##                  9.884142                  9.909167
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-21" style="background:;">
+  <article data-timings="">
+    <p>Noten que acabamos de hacer una prueba de muestras <strong>independientes</strong>, que arrojó que al comienzo del experimento, los grupos están balanceados. Veamos ahora sí en términos generales, existe un efecto del tratamiento en la cantidad de tragos por semana.</p>
+
+<pre><code class="r">t.test(bebedores$tragos_post,bebedores$tragos_pre, paired = TRUE)
+</code></pre>
+
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  bebedores$tragos_post and bebedores$tragos_pre
+## t = -15.456, df = 2580, p-value &lt; 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -1.576133 -1.221232
+## sample estimates:
+## mean of the differences 
+##               -1.398683
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-22" style="background:;">
+  <article data-timings="">
+    <p>Los resultados indican que en promedio, el tratamiento hace que la población <strong>general</strong> disminuya en 1,3 tragos por semana. </p>
+
+<p>Si se quiere, una interpretación de los resultados que utilice el intervalo de confianza, es que la población general disminuye entre <strong>1,5</strong> y <strong>1,2</strong> tragos por semana.</p>
+
+<p>Podemos ser más específicos, replanteando la hipótesis alternativa, si tenemos evidencia suficiente para postular una hipótesis <strong>direccional</strong>. En este caso:
+\[ H_{0}:\; \overline{Y}_{POST} - \overline{Y}_{PRE} = 0\]
+\[ H_{0}:\; \overline{Y}_{POST} - \overline{Y}_{PRE} < 0\]</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-23" style="background:;">
+  <article data-timings="">
+    <p>Esta hipótesis se ve reflejada en la función:</p>
+
+<pre><code class="r">t.test(bebedores$tragos_post, bebedores$tragos_pre, paired = TRUE, alternative = &quot;less&quot;)
+</code></pre>
+
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  bebedores$tragos_post and bebedores$tragos_pre
+## t = -15.456, df = 2580, p-value &lt; 2.2e-16
+## alternative hypothesis: true difference in means is less than 0
+## 95 percent confidence interval:
+##       -Inf -1.249778
+## sample estimates:
+## mean of the differences 
+##               -1.398683
+</code></pre>
+
+<p>Este resultado indica que la diferencia entre los tragos pre y post es como mínimo 1,2. Dicho de otra forma, en promedio, el tratamiento disminuye <strong>como mínimo en 1,2</strong> tragos por semana.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>Alternativa no-paramétrica.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>La función es similar que para muestras independientes, sólo que se agrega el argumento <em>paired</em>.</p>
+
+<pre><code class="r">wilcox.test(bebedores$tragos_post, bebedores$tragos_pre, paired = TRUE)
+</code></pre>
+
+<pre><code>## 
+##  Wilcoxon signed rank test with continuity correction
+## 
+## data:  bebedores$tragos_post and bebedores$tragos_pre
+## V = 914940, p-value &lt; 2.2e-16
+## alternative hypothesis: true location shift is not equal to 0
+</code></pre>
+
+<p>Este resultado muestra una diferencia <strong>estadísticamente significativa</strong> entre la medición pre y la medición post. Como se observa, la conclusión es menos precisa, pero esto se compensa con que las ocasiones en que se aplica esta prueba son mucho más <strong>restrictivas</strong> que cuando se utiliza la alternativa paramétrica.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
     <slide class="backdrop"></slide>
   </slides>
   <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
@@ -499,6 +637,48 @@ Veamos primero los promedios de edad de muerte para ambos grupos:</p>
       <a href="#" target="_self" rel='tooltip' 
         data-slide=17 title='NA'>
          17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Muestras dependientes'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Lógica experimental.'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='La función en R.'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='NA'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='NA'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='NA'>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='Alternativa no-paramétrica.'>
+         24
       </a>
     </li>
   </ul>

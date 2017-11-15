@@ -265,3 +265,104 @@ wilcox.test(edad_muerte~fuma, data=fumadores)
 ## W = 281, p-value = 0.0001734
 ## alternative hypothesis: true location shift is not equal to 0
 ```
+
+--- .segue bg:royalblue
+## Muestras dependientes
+
+---
+## Lógica experimental.
+Una prueba de diferencia de medias para **muestras dependientes** considera una lógica experimental, dado que compara a cada individuo consigo mismo en un tiempo previo. Considere una variable aleatoria $X$ en un tiempo $t$ (medición final), lo que se estima es la siguiente diferencia.
+$$ \overline{X}_{t} - \overline{X}_{t-1} $$
+Obviamente, se puede estimar una diferencia con un *lag* mayor a 1, pero como se trata de diferencias de dos medias, siempre se trabajará con dos puntos temporales.
+
+---
+## La función en R.
+Consideremos el dataframe [bebedores], que simula los resultados de un tratamiento que busca disminuir la cantidad de tragos por semana de un grupo de personas. Debemos asegurarnos que al inicio, los grupos estén balanceados:
+
+```r
+t.test(tragos_pre~grupo, data = bebedores)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  tragos_pre by grupo
+## t = -0.19854, df = 2508.3, p-value = 0.8426
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.2721842  0.2221347
+## sample estimates:
+##     mean in group Control mean in group Tratamiento 
+##                  9.884142                  9.909167
+```
+
+---
+Noten que acabamos de hacer una prueba de muestras **independientes**, que arrojó que al comienzo del experimento, los grupos están balanceados. Veamos ahora sí en términos generales, existe un efecto del tratamiento en la cantidad de tragos por semana.
+
+```r
+t.test(bebedores$tragos_post,bebedores$tragos_pre, paired = TRUE)
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  bebedores$tragos_post and bebedores$tragos_pre
+## t = -15.456, df = 2580, p-value < 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -1.576133 -1.221232
+## sample estimates:
+## mean of the differences 
+##               -1.398683
+```
+
+---
+Los resultados indican que en promedio, el tratamiento hace que la población **general** disminuya en 1,3 tragos por semana. 
+
+Si se quiere, una interpretación de los resultados que utilice el intervalo de confianza, es que la población general disminuye entre **1,5** y **1,2** tragos por semana.
+
+Podemos ser más específicos, replanteando la hipótesis alternativa, si tenemos evidencia suficiente para postular una hipótesis **direccional**. En este caso:
+$$ H_{0}:\; \overline{Y}_{POST} - \overline{Y}_{PRE} = 0$$
+$$ H_{0}:\; \overline{Y}_{POST} - \overline{Y}_{PRE} < 0$$
+
+---
+Esta hipótesis se ve reflejada en la función:
+
+```r
+t.test(bebedores$tragos_post, bebedores$tragos_pre, paired = TRUE, alternative = "less")
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  bebedores$tragos_post and bebedores$tragos_pre
+## t = -15.456, df = 2580, p-value < 2.2e-16
+## alternative hypothesis: true difference in means is less than 0
+## 95 percent confidence interval:
+##       -Inf -1.249778
+## sample estimates:
+## mean of the differences 
+##               -1.398683
+```
+Este resultado indica que la diferencia entre los tragos pre y post es como mínimo 1,2. Dicho de otra forma, en promedio, el tratamiento disminuye **como mínimo en 1,2** tragos por semana.
+
+---
+## Alternativa no-paramétrica.
+La función es similar que para muestras independientes, sólo que se agrega el argumento *paired*.
+
+```r
+wilcox.test(bebedores$tragos_post, bebedores$tragos_pre, paired = TRUE)
+```
+
+```
+## 
+## 	Wilcoxon signed rank test with continuity correction
+## 
+## data:  bebedores$tragos_post and bebedores$tragos_pre
+## V = 914940, p-value < 2.2e-16
+## alternative hypothesis: true location shift is not equal to 0
+```
+Este resultado muestra una diferencia **estadísticamente significativa** entre la medición pre y la medición post. Como se observa, la conclusión es menos precisa, pero esto se compensa con que las ocasiones en que se aplica esta prueba son mucho más **restrictivas** que cuando se utiliza la alternativa paramétrica.
