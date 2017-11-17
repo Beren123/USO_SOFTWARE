@@ -70,6 +70,38 @@ head(bebedores,5)
 ```
 
 ---
+## Datos simulados para ANOVA.
+Se recolectaron datos para 60 usuarios de software estadístico. Se registraron escalas de facilidad de uso, flexibilidad de análisis y actualización de procedimientos.
+
+
+```r
+software<-data.frame(id = 1:60,
+                     software = c(rep("R", 20), rep("SAS", 20), rep("SPSS", 20)),
+                     facilidad = c(sample(10:40, 20, replace = T), 
+                        sample(25:65, 20, replace = T), sample(40:80, 20, replace = T)),
+                     flexibilidad = c(sample(50:85, 20, replace = T), 
+                        sample(30:60, 20, replace = T), sample(10:35, 20, replace = T)),
+                     actualizacion = c(sample(50:100, 20, replace = T), 
+                        sample(20:60, 20, replace = T), sample(20:60, 20, replace = T)))
+```
+
+---
+Para comprobar el dataframe creado:
+
+```r
+str(software)
+```
+
+```
+## 'data.frame':	60 obs. of  5 variables:
+##  $ id           : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ software     : Factor w/ 3 levels "R","SAS","SPSS": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ facilidad    : int  27 31 23 36 17 30 11 23 23 38 ...
+##  $ flexibilidad : int  65 70 83 61 73 76 57 65 69 63 ...
+##  $ actualizacion: int  62 84 69 54 86 100 85 71 77 77 ...
+```
+
+---
 ## Datos reales: Simce 2016
 Leeremos el archivop [simce4_2016.xlsx], que pueden descargar de INFODA. Son los datos reales, para cada establecimiento, de sus puntajes para 4º Básico en Lectura y Matemática, además de otras variables.
 
@@ -366,3 +398,166 @@ wilcox.test(bebedores$tragos_post, bebedores$tragos_pre, paired = TRUE)
 ## alternative hypothesis: true location shift is not equal to 0
 ```
 Este resultado muestra una diferencia **estadísticamente significativa** entre la medición pre y la medición post. Como se observa, la conclusión es menos precisa, pero esto se compensa con que las ocasiones en que se aplica esta prueba son mucho más **restrictivas** que cuando se utiliza la alternativa paramétrica.
+
+--- .segue bg:royalblue
+# Diferencias entre $k$ medias.
+
+---
+## Una idea relevante.
+Si queremos comparar los valores promedio de los $k$ niveles de una variable $Y$, **¿por qué no hacemos $\binom{k}{2}$ comparaciones utilizando pruebas T?**
+
+Supongamnos el caso más simple, una variable con tres niveles:
+$$ x \in \{x_{1}, x_{2}, x_{3} \}$$
+
+Podríamos hacer las siguientes comparaciones:
+
+* $H_{0}: \; \overline{X}_{1} - \overline{X}_{2} = 0$
+* $H_{0}: \; \overline{X}_{2} - \overline{X}_{3} = 0$
+* $H_{0}: \; \overline{X}_{1} - \overline{X}_{3} = 0$
+
+---
+## El problema dsel enfoque anterior.
+Si cada una de estas comparaciones se realiza con un **95%** de confianza; y asumimos que son independientes entre sí, el nivel de confianza de la prueba será:
+$$ 0,95 \times 0,95 \times  0,95 = 0,95^3 = 0,857375$$
+
+Por tanto, la probabilidad de cometer un **error tipo I** es:
+$$ 1 - 0,95^3 = 0,142625 $$
+
+De esta forma, si hacemos comparaciones múltiples, en lugar de trabajar con un máximo de 5% de rechazar kla hipótesis nula, trabajamos con un 14,26%.
+
+--- 
+## Supuestos de la prueba de análisis de varianza.
+### Homocedasticidad
+Al igual que para dos medias, se puede verificar este supuesto con una prueba de Bartlett.
+
+```r
+bartlett.test(software$facilidad, software$software)
+```
+
+```
+## 
+## 	Bartlett test of homogeneity of variances
+## 
+## data:  software$facilidad and software$software
+## Bartlett's K-squared = 4.7845, df = 2, p-value = 0.09142
+```
+
+---
+### Las distribuciones de la variable dependiente para los $k$ grupos son normales.
+
+```r
+by(software$facilidad, software$software, shapiro.test)
+```
+
+```
+## software$software: R
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  dd[x, ]
+## W = 0.95679, p-value = 0.4819
+## 
+## -------------------------------------------------------- 
+## software$software: SAS
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  dd[x, ]
+## W = 0.90106, p-value = 0.04316
+## 
+## -------------------------------------------------------- 
+## software$software: SPSS
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  dd[x, ]
+## W = 0.86642, p-value = 0.01017
+```
+
+---
+## La prueba ANOVA.
+Consideremos el mismo ejemplo anterior, cuya hipótesis nula es:
+$$H_{0}: \; \overline{Y}_{R} = \overline{Y}_{SAS} = \overline{Y}_{SPSS}$$
+Para facilitar el proceso, crearemos un objeto [anova1] con los resultados de la comparación.
+
+```r
+anova1<-aov(facilidad~software, data = software)
+
+summary(anova1)
+```
+
+```
+##             Df Sum Sq Mean Sq F value   Pr(>F)    
+## software     2  12981    6491   45.84 1.36e-12 ***
+## Residuals   57   8071     142                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+## ¿Dónde están las diferencias?
+Se pueden hacer comparaciones múltipes con la siguiente función:
+
+```r
+TukeyHSD(anova1)
+```
+
+```
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = facilidad ~ software, data = software)
+## 
+## $software
+##           diff       lwr     upr     p adj
+## SAS-R    22.85 13.795095 31.9049 0.0000003
+## SPSS-R   35.55 26.495095 44.6049 0.0000000
+## SPSS-SAS 12.70  3.645095 21.7549 0.0037584
+```
+
+---
+O bien, se puede observar gráficamente.
+
+```r
+boxplot(software$facilidad~software$software)
+```
+
+![plot of chunk unnamed-chunk-22](assets/fig/unnamed-chunk-22-1.png)
+
+--- .segue bg:royalblue
+## Cuando no se cumplen los supuestos.
+
+---
+## Heterocedasticidad.
+En caso de haber obtenido varianzas que no son iguales en la prueba de Bartlett, se puede utilizar la prueba F de Welch.
+
+```r
+oneway.test(facilidad~software, data = software)
+```
+
+```
+## 
+## 	One-way analysis of means (not assuming equal variances)
+## 
+## data:  facilidad and software
+## F = 52.798, num df = 2.000, denom df = 36.303, p-value = 1.793e-11
+```
+
+----
+## Distribución normal de las variables
+Si no se cumple este supuesto, podemos usar la prueba no-paramétrica de **Kruskal-Wallis**
+
+```r
+kruskal.test(facilidad~software, data = software)
+```
+
+```
+## 
+## 	Kruskal-Wallis rank sum test
+## 
+## data:  facilidad by software
+## Kruskal-Wallis chi-squared = 39.446, df = 2, p-value = 2.719e-09
+```
+
+--- .segue bg:royalblue
+# ¿Preguntas?

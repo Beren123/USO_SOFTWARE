@@ -135,6 +135,46 @@ head(bebedores,5)
 
 <slide class="" id="slide-5" style="background:;">
   <hgroup>
+    <h2>Datos simulados para ANOVA.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Se recolectaron datos para 60 usuarios de software estadístico. Se registraron escalas de facilidad de uso, flexibilidad de análisis y actualización de procedimientos.</p>
+
+<pre><code class="r">software&lt;-data.frame(id = 1:60,
+                     software = c(rep(&quot;R&quot;, 20), rep(&quot;SAS&quot;, 20), rep(&quot;SPSS&quot;, 20)),
+                     facilidad = c(sample(10:40, 20, replace = T), 
+                        sample(25:65, 20, replace = T), sample(40:80, 20, replace = T)),
+                     flexibilidad = c(sample(50:85, 20, replace = T), 
+                        sample(30:60, 20, replace = T), sample(10:35, 20, replace = T)),
+                     actualizacion = c(sample(50:100, 20, replace = T), 
+                        sample(20:60, 20, replace = T), sample(20:60, 20, replace = T)))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <article data-timings="">
+    <p>Para comprobar el dataframe creado:</p>
+
+<pre><code class="r">str(software)
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    60 obs. of  5 variables:
+##  $ id           : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ software     : Factor w/ 3 levels &quot;R&quot;,&quot;SAS&quot;,&quot;SPSS&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ facilidad    : int  27 31 23 36 17 30 11 23 23 38 ...
+##  $ flexibilidad : int  65 70 83 61 73 76 57 65 69 63 ...
+##  $ actualizacion: int  62 84 69 54 86 100 85 71 77 77 ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
     <h2>Datos reales: Simce 2016</h2>
   </hgroup>
   <article data-timings="">
@@ -157,7 +197,7 @@ simce$rural&lt;-factor(simce$rural, levels = c(1,2),
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-6" style="background:;">
+<slide class="" id="slide-8" style="background:;">
   <article data-timings="">
     <p>Posteriormente, comprobamos las variables recodificadas:</p>
 
@@ -180,7 +220,7 @@ simce$rural&lt;-factor(simce$rural, levels = c(1,2),
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue" id="slide-7" style="background:royalblue;">
+<slide class="segue" id="slide-9" style="background:royalblue;">
   <hgroup>
     <h1>Diferencias de dos medias</h1>
   </hgroup>
@@ -190,7 +230,7 @@ simce$rural&lt;-factor(simce$rural, levels = c(1,2),
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue" id="slide-8" style="background:royalblue;">
+<slide class="segue" id="slide-10" style="background:royalblue;">
   <hgroup>
     <h2>Muestras independientes.</h2>
   </hgroup>
@@ -200,7 +240,7 @@ simce$rural&lt;-factor(simce$rural, levels = c(1,2),
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-9" style="background:;">
+<slide class="" id="slide-11" style="background:;">
   <hgroup>
     <h2>Supuestos.</h2>
   </hgroup>
@@ -218,7 +258,7 @@ simce$rural&lt;-factor(simce$rural, levels = c(1,2),
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-10" style="background:;">
+<slide class="" id="slide-12" style="background:;">
   <hgroup>
     <h2>Error Estándar.</h2>
   </hgroup>
@@ -233,7 +273,7 @@ Estas medidas son relevantes para construir los <strong>intervalos de confianza<
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-11" style="background:;">
+<slide class="" id="slide-13" style="background:;">
   <hgroup>
     <h2>Ejemplo: fumadores</h2>
   </hgroup>
@@ -258,7 +298,7 @@ Estas medidas son relevantes para construir los <strong>intervalos de confianza<
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-12" style="background:;">
+<slide class="" id="slide-14" style="background:;">
   <article data-timings="">
     <pre><code class="r">tapply(fumadores$edad_muerte, fumadores$fuma, shapiro.test)
 </code></pre>
@@ -283,7 +323,7 @@ Estas medidas son relevantes para construir los <strong>intervalos de confianza<
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-13" style="background:;">
+<slide class="" id="slide-15" style="background:;">
   <article data-timings="">
     <p>Si no obtenemos normalidad, podemos verificar el <em>ratio</em> entre el \(n\) de ambos grupos:</p>
 
@@ -312,7 +352,7 @@ Estas medidas son relevantes para construir los <strong>intervalos de confianza<
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-14" style="background:;">
+<slide class="" id="slide-16" style="background:;">
   <hgroup>
     <h2>T-test</h2>
   </hgroup>
@@ -334,7 +374,7 @@ Veamos primero los promedios de edad de muerte para ambos grupos:</p>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-15" style="background:;">
+<slide class="" id="slide-17" style="background:;">
   <article data-timings="">
     <p>Probemos que esta diferencia efectivamente es distinta de cero.</p>
 
@@ -358,7 +398,7 @@ Veamos primero los promedios de edad de muerte para ambos grupos:</p>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-16" style="background:;">
+<slide class="" id="slide-18" style="background:;">
   <hgroup>
     <h2>Alternativa no-paramétrica.</h2>
   </hgroup>
@@ -372,7 +412,7 @@ Veamos primero los promedios de edad de muerte para ambos grupos:</p>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-17" style="background:;">
+<slide class="" id="slide-19" style="background:;">
   <article data-timings="">
     <p>La función en R:</p>
 
@@ -395,7 +435,7 @@ Veamos primero los promedios de edad de muerte para ambos grupos:</p>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="segue" id="slide-18" style="background:royalblue;">
+<slide class="segue" id="slide-20" style="background:royalblue;">
   <hgroup>
     <h2>Muestras dependientes</h2>
   </hgroup>
@@ -405,7 +445,7 @@ Veamos primero los promedios de edad de muerte para ambos grupos:</p>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-19" style="background:;">
+<slide class="" id="slide-21" style="background:;">
   <hgroup>
     <h2>Lógica experimental.</h2>
   </hgroup>
@@ -418,7 +458,7 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-20" style="background:;">
+<slide class="" id="slide-22" style="background:;">
   <hgroup>
     <h2>La función en R.</h2>
   </hgroup>
@@ -445,7 +485,7 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-21" style="background:;">
+<slide class="" id="slide-23" style="background:;">
   <article data-timings="">
     <p>Noten que acabamos de hacer una prueba de muestras <strong>independientes</strong>, que arrojó que al comienzo del experimento, los grupos están balanceados. Veamos ahora sí en términos generales, existe un efecto del tratamiento en la cantidad de tragos por semana.</p>
 
@@ -469,7 +509,7 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-22" style="background:;">
+<slide class="" id="slide-24" style="background:;">
   <article data-timings="">
     <p>Los resultados indican que en promedio, el tratamiento hace que la población <strong>general</strong> disminuya en 1,3 tragos por semana. </p>
 
@@ -483,7 +523,7 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-23" style="background:;">
+<slide class="" id="slide-25" style="background:;">
   <article data-timings="">
     <p>Esta hipótesis se ve reflejada en la función:</p>
 
@@ -509,7 +549,7 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-24" style="background:;">
+<slide class="" id="slide-26" style="background:;">
   <hgroup>
     <h2>Alternativa no-paramétrica.</h2>
   </hgroup>
@@ -529,6 +569,240 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
 
 <p>Este resultado muestra una diferencia <strong>estadísticamente significativa</strong> entre la medición pre y la medición post. Como se observa, la conclusión es menos precisa, pero esto se compensa con que las ocasiones en que se aplica esta prueba son mucho más <strong>restrictivas</strong> que cuando se utiliza la alternativa paramétrica.</p>
 
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-27" style="background:royalblue;">
+  <hgroup>
+    <h1>Diferencias entre \(k\) medias.</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-28" style="background:;">
+  <hgroup>
+    <h2>Una idea relevante.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Si queremos comparar los valores promedio de los \(k\) niveles de una variable \(Y\), <strong>¿por qué no hacemos \(\binom{k}{2}\) comparaciones utilizando pruebas T?</strong></p>
+
+<p>Supongamnos el caso más simple, una variable con tres niveles:
+\[ x \in \{x_{1}, x_{2}, x_{3} \}\]</p>
+
+<p>Podríamos hacer las siguientes comparaciones:</p>
+
+<ul>
+<li>\(H_{0}: \; \overline{X}_{1} - \overline{X}_{2} = 0\)</li>
+<li>\(H_{0}: \; \overline{X}_{2} - \overline{X}_{3} = 0\)</li>
+<li>\(H_{0}: \; \overline{X}_{1} - \overline{X}_{3} = 0\)</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>El problema dsel enfoque anterior.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Si cada una de estas comparaciones se realiza con un <strong>95%</strong> de confianza; y asumimos que son independientes entre sí, el nivel de confianza de la prueba será:
+\[ 0,95 \times 0,95 \times  0,95 = 0,95^3 = 0,857375\]</p>
+
+<p>Por tanto, la probabilidad de cometer un <strong>error tipo I</strong> es:
+\[ 1 - 0,95^3 = 0,142625 \]</p>
+
+<p>De esta forma, si hacemos comparaciones múltiples, en lugar de trabajar con un máximo de 5% de rechazar kla hipótesis nula, trabajamos con un 14,26%.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>Supuestos de la prueba de análisis de varianza.</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>Homocedasticidad</h3>
+
+<p>Al igual que para dos medias, se puede verificar este supuesto con una prueba de Bartlett.</p>
+
+<pre><code class="r">bartlett.test(software$facilidad, software$software)
+</code></pre>
+
+<pre><code>## 
+##  Bartlett test of homogeneity of variances
+## 
+## data:  software$facilidad and software$software
+## Bartlett&#39;s K-squared = 4.7845, df = 2, p-value = 0.09142
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-31" style="background:;">
+  <hgroup>
+    <h3>Las distribuciones de la variable dependiente para los \(k\) grupos son normales.</h3>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">by(software$facilidad, software$software, shapiro.test)
+</code></pre>
+
+<pre><code>## software$software: R
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  dd[x, ]
+## W = 0.95679, p-value = 0.4819
+## 
+## -------------------------------------------------------- 
+## software$software: SAS
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  dd[x, ]
+## W = 0.90106, p-value = 0.04316
+## 
+## -------------------------------------------------------- 
+## software$software: SPSS
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  dd[x, ]
+## W = 0.86642, p-value = 0.01017
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>La prueba ANOVA.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Consideremos el mismo ejemplo anterior, cuya hipótesis nula es:
+\[H_{0}: \; \overline{Y}_{R} = \overline{Y}_{SAS} = \overline{Y}_{SPSS}\]
+Para facilitar el proceso, crearemos un objeto [anova1] con los resultados de la comparación.</p>
+
+<pre><code class="r">anova1&lt;-aov(facilidad~software, data = software)
+
+summary(anova1)
+</code></pre>
+
+<pre><code>##             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## software     2  12981    6491   45.84 1.36e-12 ***
+## Residuals   57   8071     142                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-33" style="background:;">
+  <hgroup>
+    <h2>¿Dónde están las diferencias?</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Se pueden hacer comparaciones múltipes con la siguiente función:</p>
+
+<pre><code class="r">TukeyHSD(anova1)
+</code></pre>
+
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = facilidad ~ software, data = software)
+## 
+## $software
+##           diff       lwr     upr     p adj
+## SAS-R    22.85 13.795095 31.9049 0.0000003
+## SPSS-R   35.55 26.495095 44.6049 0.0000000
+## SPSS-SAS 12.70  3.645095 21.7549 0.0037584
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-34" style="background:;">
+  <article data-timings="">
+    <p>O bien, se puede observar gráficamente.</p>
+
+<pre><code class="r">boxplot(software$facilidad~software$software)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-22-1.png" alt="plot of chunk unnamed-chunk-22"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-35" style="background:royalblue;">
+  <hgroup>
+    <h2>Cuando no se cumplen los supuestos.</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-36" style="background:;">
+  <hgroup>
+    <h2>Heterocedasticidad.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>En caso de haber obtenido varianzas que no son iguales en la prueba de Bartlett, se puede utilizar la prueba F de Welch.</p>
+
+<pre><code class="r">oneway.test(facilidad~software, data = software)
+</code></pre>
+
+<pre><code>## 
+##  One-way analysis of means (not assuming equal variances)
+## 
+## data:  facilidad and software
+## F = 52.798, num df = 2.000, denom df = 36.303, p-value = 1.793e-11
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-37" style="background:;">
+  <hgroup>
+    <h2>Distribución normal de las variables</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Si no se cumple este supuesto, podemos usar la prueba no-paramétrica de <strong>Kruskal-Wallis</strong></p>
+
+<pre><code class="r">kruskal.test(facilidad~software, data = software)
+</code></pre>
+
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  facilidad by software
+## Kruskal-Wallis chi-squared = 39.446, df = 2, p-value = 2.719e-09
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-38" style="background:royalblue;">
+  <hgroup>
+    <h1>¿Preguntas?</h1>
+  </hgroup>
+  <article data-timings="">
+    
   </article>
   <!-- Presenter Notes -->
 </slide>
@@ -563,7 +837,7 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=5 title='Datos reales: Simce 2016'>
+        data-slide=5 title='Datos simulados para ANOVA.'>
          5
       </a>
     </li>
@@ -575,49 +849,49 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=7 title='Diferencias de dos medias'>
+        data-slide=7 title='Datos reales: Simce 2016'>
          7
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=8 title='Muestras independientes.'>
+        data-slide=8 title='NA'>
          8
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=9 title='Supuestos.'>
+        data-slide=9 title='Diferencias de dos medias'>
          9
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=10 title='Error Estándar.'>
+        data-slide=10 title='Muestras independientes.'>
          10
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=11 title='Ejemplo: fumadores'>
+        data-slide=11 title='Supuestos.'>
          11
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=12 title='NA'>
+        data-slide=12 title='Error Estándar.'>
          12
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=13 title='NA'>
+        data-slide=13 title='Ejemplo: fumadores'>
          13
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=14 title='T-test'>
+        data-slide=14 title='NA'>
          14
       </a>
     </li>
@@ -629,7 +903,7 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=16 title='Alternativa no-paramétrica.'>
+        data-slide=16 title='T-test'>
          16
       </a>
     </li>
@@ -641,31 +915,31 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=18 title='Muestras dependientes'>
+        data-slide=18 title='Alternativa no-paramétrica.'>
          18
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=19 title='Lógica experimental.'>
+        data-slide=19 title='NA'>
          19
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=20 title='La función en R.'>
+        data-slide=20 title='Muestras dependientes'>
          20
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=21 title='NA'>
+        data-slide=21 title='Lógica experimental.'>
          21
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=22 title='NA'>
+        data-slide=22 title='La función en R.'>
          22
       </a>
     </li>
@@ -677,8 +951,92 @@ Obviamente, se puede estimar una diferencia con un <em>lag</em> mayor a 1, pero 
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=24 title='Alternativa no-paramétrica.'>
+        data-slide=24 title='NA'>
          24
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=25 title='NA'>
+         25
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=26 title='Alternativa no-paramétrica.'>
+         26
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=27 title='Diferencias entre \(k\) medias.'>
+         27
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=28 title='Una idea relevante.'>
+         28
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=29 title='El problema dsel enfoque anterior.'>
+         29
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=30 title='Supuestos de la prueba de análisis de varianza.'>
+         30
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=31 title='Las distribuciones de la variable dependiente para los \(k\) grupos son normales.'>
+         31
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=32 title='La prueba ANOVA.'>
+         32
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=33 title='¿Dónde están las diferencias?'>
+         33
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=34 title='NA'>
+         34
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=35 title='Cuando no se cumplen los supuestos.'>
+         35
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=36 title='Heterocedasticidad.'>
+         36
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=37 title='Distribución normal de las variables'>
+         37
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=38 title='¿Preguntas?'>
+         38
       </a>
     </li>
   </ul>
