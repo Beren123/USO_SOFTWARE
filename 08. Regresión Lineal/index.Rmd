@@ -1,0 +1,74 @@
+---
+title       : Modelo de Regresión
+subtitle    : Regresión Lineal
+author      : Valentín Vergara Hidd
+job         : Uso de Software en Investigación Social
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax, quiz, bootstrap]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+logo        : escudoof.gif
+biglogo     : marcaderecha.png
+
+
+---. segue bg:royalblue
+# Datos para esta clase
+
+---
+## Datos desde R.
+Vamos a cargar un *dataframe* que viene precargado en R. 
+
+```{r}
+data(mtcars)
+```
+Para saber qué contiene el *datafreme*, usamos la ayuda de R; y luego utilizamos la función str.
+```{r}
+help(mtcars)
+str(mtcars)
+```
+
+---
+## Datos simulados
+También trabajaremos con datos simulados, tal como las clases anteriores. Para ello, crearemos el siguiente *dataframe*, con datos de 1000 pacientes en tratamiento y cuya variable dependiene es una escala de dolor:
+```{r}
+regresion<-data.frame(id = 1:1000,
+              dolor = rnorm(1000, mean = 65, sd = 15),
+              edad = sample(40:80, 1000, replace = T),
+              diagnostico = sample(c("Ébola", "Cáncer", "Lepra", "Bulimia"),
+                                   1000, replace = T),
+              drogas = sample(c("Sí", "No", 1000, replace = T)),
+              hr_trabajo = rpois(1000, 40))
+```
+
+---
+Para verificar los datos, usamos la función head.
+```{r}
+head(regresion)
+```
+
+--- .segue bg:royalblue
+## Un paso previo: correlación.
+
+---
+## Dos variables numéricas.
+Cuando tenemos dos variables numéricas, $X$ y $Y$, establecemos su correlación como:
+
+<<INSERT FORMULA HERE>>
+
+Noten que si invertimos el orden de $Y$ y $X$, no obtendremos diferencias. Esto implica que esta prueba no distingue entre variables *dependientes* e *independientes*
+
+---
+## Correlación en R.
+Por ejemplo, si utilizamos el *dataframe* [mtcars] y buscamos la correlación entre millas por galón y peso del auto:
+```{r}
+cor.test(mtcars$mpg, mtcars$wt)
+```
+
+---
+## Graficando en una nube de puntos.
+```{r}
+plot(mtcars$mpg, mtcars$wt)
+```
+

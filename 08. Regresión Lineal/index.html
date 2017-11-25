@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Modelo de Regresión</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Modelo de Regresión">
+  <meta name="author" content="Valentín Vergara Hidd">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/quiz/css/demo.css"></link>
+<link rel=stylesheet href="libraries/widgets/bootstrap/css/bootstrap.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+      <slide class="nobackground">
+    <article class="flexbox vcenter">
+      <span>
+        <img width='300px' src="assets/img/marcaderecha.png">
+      </span>
+    </article>
+  </slide>
+    <slide class="title-slide segue nobackground">
+  <aside class="gdbar">
+    <img src="assets/img/escudoof.gif">
+  </aside>
+  <hgroup class="auto-fadein">
+    <h1>Modelo de Regresión</h1>
+    <h2>Regresión Lineal</h2>
+    <p>Valentín Vergara Hidd<br/>Uso de Software en Investigación Social</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:royalblue;">
+  <hgroup>
+    <h1>Datos para esta clase</h1>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Datos desde R.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Vamos a cargar un <em>dataframe</em> que viene precargado en R. </p>
+
+<pre><code class="r">data(mtcars)
+</code></pre>
+
+<p>Para saber qué contiene el <em>datafreme</em>, usamos la ayuda de R; y luego utilizamos la función str.</p>
+
+<pre><code class="r">help(mtcars)
+str(mtcars)
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    32 obs. of  11 variables:
+##  $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##  $ cyl : num  6 6 4 6 8 6 8 4 4 6 ...
+##  $ disp: num  160 160 108 258 360 ...
+##  $ hp  : num  110 110 93 110 175 105 245 62 95 123 ...
+##  $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+##  $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...
+##  $ qsec: num  16.5 17 18.6 19.4 17 ...
+##  $ vs  : num  0 0 1 1 0 1 0 1 1 1 ...
+##  $ am  : num  1 1 1 0 0 0 0 0 0 0 ...
+##  $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
+##  $ carb: num  4 4 1 1 2 1 4 2 2 4 ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Datos simulados</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>También trabajaremos con datos simulados, tal como las clases anteriores. Para ello, crearemos el siguiente <em>dataframe</em>, con datos de 1000 pacientes en tratamiento y cuya variable dependiene es una escala de dolor:</p>
+
+<pre><code class="r">regresion&lt;-data.frame(id = 1:1000,
+              dolor = rnorm(1000, mean = 65, sd = 15),
+              edad = sample(40:80, 1000, replace = T),
+              diagnostico = sample(c(&quot;Ébola&quot;, &quot;Cáncer&quot;, &quot;Lepra&quot;, &quot;Bulimia&quot;),
+                                   1000, replace = T),
+              drogas = sample(c(&quot;Sí&quot;, &quot;No&quot;, 1000, replace = T)),
+              hr_trabajo = rpois(1000, 40))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <article data-timings="">
+    <p>Para verificar los datos, usamos la función head.</p>
+
+<pre><code class="r">head(regresion)
+</code></pre>
+
+<pre><code>##   id    dolor edad diagnostico drogas hr_trabajo
+## 1  1 59.53870   55     Bulimia   TRUE         37
+## 2  2 51.15708   64       Lepra   1000         55
+## 3  3 47.17656   73       Lepra    Sí         37
+## 4  4 77.88181   40      �&lt;U+0089&gt;bola     No         36
+## 5  5 59.19429   61      �&lt;U+0089&gt;bola   TRUE         44
+## 6  6 44.09850   51     Bulimia   1000         37
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-5" style="background:royalblue;">
+  <hgroup>
+    <h2>Un paso previo: correlación.</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Dos variables numéricas.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Cuando tenemos dos variables numéricas, \(X\) y \(Y\), establecemos su correlación como:</p>
+
+<p>&lt;<INSERT FORMULA HERE>&gt;</p>
+
+<p>Noten que si invertimos el orden de \(Y\) y \(X\), no obtendremos diferencias. Esto implica que esta prueba no distingue entre variables <em>dependientes</em> e <em>independientes</em></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Correlación en R.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Por ejemplo, si utilizamos el <em>dataframe</em> [mtcars] y buscamos la correlación entre millas por galón y peso del auto:</p>
+
+<pre><code class="r">cor.test(mtcars$mpg, mtcars$wt)
+</code></pre>
+
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  mtcars$mpg and mtcars$wt
+## t = -9.559, df = 30, p-value = 1.294e-10
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.9338264 -0.7440872
+## sample estimates:
+##        cor 
+## -0.8676594
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Graficando en una nube de puntos.</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">plot(mtcars$mpg, mtcars$wt)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Datos para esta clase'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Datos desde R.'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Datos simulados'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='NA'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Un paso previo: correlación.'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Dos variables numéricas.'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Correlación en R.'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Graficando en una nube de puntos.'>
+         8
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  <script src="libraries/widgets/quiz/js/jquery.quiz.js"></script>
+<script src="libraries/widgets/quiz/js/mustache.min.js"></script>
+<script src="libraries/widgets/quiz/js/quiz-app.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootstrap.min.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootbox.min.js"></script>
+
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<script>  
+  $(function (){ 
+    $("#example").popover(); 
+    $("[rel='tooltip']").tooltip(); 
+  });  
+  </script>  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
