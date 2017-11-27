@@ -53,7 +53,7 @@
     
 
     <!-- SLIDES -->
-    <slide class="" id="slide-1" style="background:royalblue;">
+    <slide class="segue" id="slide-1" style="background:royalblue;">
   <hgroup>
     <h1>Datos para esta clase</h1>
   </hgroup>
@@ -109,7 +109,7 @@ str(mtcars)
               edad = sample(40:80, 1000, replace = T),
               diagnostico = sample(c(&quot;Ébola&quot;, &quot;Cáncer&quot;, &quot;Lepra&quot;, &quot;Bulimia&quot;),
                                    1000, replace = T),
-              drogas = sample(c(&quot;Sí&quot;, &quot;No&quot;, 1000, replace = T)),
+              drogas = sample(c(&quot;Sí&quot;, &quot;No&quot;), 1000, replace = T),
               hr_trabajo = rpois(1000, 40))
 </code></pre>
 
@@ -125,12 +125,12 @@ str(mtcars)
 </code></pre>
 
 <pre><code>##   id    dolor edad diagnostico drogas hr_trabajo
-## 1  1 59.53870   55     Bulimia   TRUE         37
-## 2  2 51.15708   64       Lepra   1000         55
-## 3  3 47.17656   73       Lepra    Sí         37
-## 4  4 77.88181   40      �&lt;U+0089&gt;bola     No         36
-## 5  5 59.19429   61      �&lt;U+0089&gt;bola   TRUE         44
-## 6  6 44.09850   51     Bulimia   1000         37
+## 1  1 48.28497   57      Cáncer     Sí         35
+## 2  2 61.30041   71       Ébola     Sí         55
+## 3  3 66.32513   55       Lepra     Sí         43
+## 4  4 90.67203   54       Lepra     No         42
+## 5  5 43.91336   50       Lepra     Sí         42
+## 6  6 52.12640   59      Cáncer     No         36
 </code></pre>
 
   </article>
@@ -154,7 +154,7 @@ str(mtcars)
   <article data-timings="">
     <p>Cuando tenemos dos variables numéricas, \(X\) y \(Y\), establecemos su correlación como:</p>
 
-<p>&lt;<INSERT FORMULA HERE>&gt;</p>
+<p>\[ r_{xy} = \frac{cov_{xy}}{s_{x}s_{y}} = \frac{\sum^{n}_{i = 1}(x_{i} - \overline{x})(y_{i} - \overline{y})}{(n-1)s_{x}s_{y}}\]</p>
 
 <p>Noten que si invertimos el orden de \(Y\) y \(X\), no obtendremos diferencias. Esto implica que esta prueba no distingue entre variables <em>dependientes</em> e <em>independientes</em></p>
 
@@ -194,11 +194,305 @@ str(mtcars)
     <h2>Graficando en una nube de puntos.</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">plot(mtcars$mpg, mtcars$wt)
+    <pre><code class="r">plot(mtcars$mpg, mtcars$wt, xlab = &quot;Millas por galón&quot;, ylab = &quot;Peso&quot;)
 </code></pre>
 
-<p><img src="assets/fig/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"></p>
+<p><img src="figure/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" /></p>
 
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-9" style="background:royalblue;">
+  <hgroup>
+    <h2>Modelo Lineal</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>El modelo más simple</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>El modelo más simple con el que vamos a trabajar tiene la forma:
+\[ y_{i} = \beta_{0} + \beta_{1} x_{i} \]
+Una vez estimado, este modelo tomará la siguiente forma:
+\[ E(y) = \hat{\beta}_{0} + \hat{\beta}_{1} x_{i} + \epsilon_{i}\]</p>
+
+<p>Se debe recordar que lo que buscamos es una <strong>ecuación de la recta</strong> que pase por la mayor cantidad de puntos, es decir:</p>
+
+<p>\[ \min \epsilon_{i} = y_{i} - \hat{\beta}_{0} - \hat{\beta}_{1}x_{i}\]</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Estimación en R.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Utilizamos la función <strong>lm</strong> (<em>linear model</em>) para crear un objeto que contenga lo siguiente:</p>
+
+<ul>
+<li>El modelo a estimar.</li>
+<li>El \(R^{2}\) y su valor \(p\).</li>
+<li>Los coeficientes de regresión, con sus pruebas \(T\) y valores \(p\).</li>
+<li>Entre otros elementos más específicos.
+Continuando con el ejemplo de correlación, estimaremos un modelo lineal en que las millas por galón son una función del peso de cada automóvil.</li>
+</ul>
+
+<pre><code class="r">modelo1&lt;-lm(mpg~wt, data = mtcars)
+</code></pre>
+
+<p>Para ver el contenido del objeto:</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">summary(modelo1)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5432 -2.3647 -0.1252  1.4096  6.8727 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  37.2851     1.8776  19.858  &lt; 2e-16 ***
+## wt           -5.3445     0.5591  -9.559 1.29e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.046 on 30 degrees of freedom
+## Multiple R-squared:  0.7528, Adjusted R-squared:  0.7446 
+## F-statistic: 91.38 on 1 and 30 DF,  p-value: 1.294e-10
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <article data-timings="">
+    <p>Consideremos el gráfico de la correlación entre ambas variables, ahora utilizando el paquete [ggplot2]:</p>
+
+<pre><code class="r">install.packages(&quot;ggplot2&quot;, repos = &#39;https://dirichlet.mat.puc.cl/&#39;)
+</code></pre>
+
+<pre><code>## Installing package into &#39;/usr/local/lib/R/site-library&#39;
+## (as &#39;lib&#39; is unspecified)
+</code></pre>
+
+<pre><code class="r">library(ggplot2)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">ggplot(data = mtcars, aes(wt,mpg)) + geom_point()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Agregando la recta de regresión estimada.</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">ggplot(data = mtcars, aes(wt,mpg)) + geom_point() + geom_smooth(method = &quot;lm&quot;, se = FALSE)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Probando algunas cosas.</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>1. El Coeficiente de correlación al cuadrado es igual al \(R^{2}\)</h3>
+
+<pre><code class="r">cor(mtcars$wt, mtcars$mpg)^2
+</code></pre>
+
+<pre><code>## [1] 0.7528328
+</code></pre>
+
+<h3>2. La suma de los errores es cercana a cero</h3>
+
+<pre><code class="r">sum(modelo1$residuals)
+</code></pre>
+
+<pre><code>## [1] -1.637579e-15
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-17" style="background:royalblue;">
+  <hgroup>
+    <h2>Modelos Multivariados</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Forma General</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Un modelo de regresión multivariado tiene la siguiente forma (general):
+\[ y_{i} = \beta_{0} + \beta_{1}x_{1i} + \beta_{2}x_{2i} + \ldots + \beta_{k}x_{ki}\]
+En este caso, probaremos un modelo con dos variables independientes, peso (wt) y caballos de fuerza (hp). El modelo quedará de la siguiente forma:
+\[ mpg_{i} = \beta_{0} + \beta_{1} wt_{i} + \beta_{2} hp_{i}\]</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Estimación en R.</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Para estimar el modelo, crearemos un objeto [modelo2].</p>
+
+<pre><code class="r">modelo2&lt;-lm(mpg ~ wt + hp, data = mtcars)
+anova(modelo2)
+</code></pre>
+
+<pre><code>## Analysis of Variance Table
+## 
+## Response: mpg
+##           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## wt         1 847.73  847.73 126.041 4.488e-12 ***
+## hp         1  83.27   83.27  12.381  0.001451 ** 
+## Residuals 29 195.05    6.73                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-20" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">summary(modelo2)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt + hp, data = mtcars)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.941 -1.600 -0.182  1.050  5.854 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 37.22727    1.59879  23.285  &lt; 2e-16 ***
+## wt          -3.87783    0.63273  -6.129 1.12e-06 ***
+## hp          -0.03177    0.00903  -3.519  0.00145 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.593 on 29 degrees of freedom
+## Multiple R-squared:  0.8268, Adjusted R-squared:  0.8148 
+## F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-21" style="background:royalblue;">
+  <hgroup>
+    <h2>Variables categóricas como predictores.</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>Extensión del modelo</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>La inclusión de variables categóricas es un caso más del modelo general. Sólo se debe tener en cuenta que si se quiere incluir una variable de este tipo, debe ser de tipo <em>factor</em>.</p>
+
+<p>Consideremos un ejemplo de los datos simulados, donde modelamos la variable <strong>dolor</strong> como una función de <strong>edad</strong> y <strong>diagnóstico</strong>.</p>
+
+<pre><code class="r">modelo3&lt;-lm(dolor~edad + factor(diagnostico), data = regresion)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="smallcode" id="slide-23" style="background:;">
+  <article data-timings="">
+    <pre><code>## 
+## Call:
+## lm(formula = dolor ~ edad + factor(diagnostico), data = regresion)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -42.421 -10.482  -0.206  11.150  64.769 
+## 
+## Coefficients:
+##                            Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)               60.974128   2.658724  22.934   &lt;2e-16 ***
+## edad                       0.057247   0.041573   1.377    0.169    
+## factor(diagnostico)Cáncer  1.181642   1.367911   0.864    0.388    
+## factor(diagnostico)Ébola   0.561581   1.369619   0.410    0.682    
+## factor(diagnostico)Lepra  -0.004468   1.342043  -0.003    0.997    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 15.26 on 995 degrees of freedom
+## Multiple R-squared:  0.002965,   Adjusted R-squared:  -0.001044 
+## F-statistic: 0.7397 on 4 and 995 DF,  p-value: 0.565
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="segue" id="slide-24" style="background:royalblue;">
+  <hgroup>
+    <h1>¿Preguntas?</h1>
+  </hgroup>
+  <article data-timings="">
+    
   </article>
   <!-- Presenter Notes -->
 </slide>
@@ -253,6 +547,102 @@ str(mtcars)
       <a href="#" target="_self" rel='tooltip' 
         data-slide=8 title='Graficando en una nube de puntos.'>
          8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Modelo Lineal'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='El modelo más simple'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Estimación en R.'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='NA'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='NA'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='NA'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Agregando la recta de regresión estimada.'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Probando algunas cosas.'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='Modelos Multivariados'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Forma General'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Estimación en R.'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='NA'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Variables categóricas como predictores.'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='Extensión del modelo'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='NA'>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='¿Preguntas?'>
+         24
       </a>
     </li>
   </ul>

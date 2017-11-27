@@ -13,7 +13,8 @@ logo        : escudoof.gif
 biglogo     : marcaderecha.png
 
 
----. segue bg:royalblue
+--- .segue bg:royalblue
+
 # Datos para esta clase
 
 ---
@@ -38,7 +39,7 @@ regresion<-data.frame(id = 1:1000,
               edad = sample(40:80, 1000, replace = T),
               diagnostico = sample(c("Ébola", "Cáncer", "Lepra", "Bulimia"),
                                    1000, replace = T),
-              drogas = sample(c("Sí", "No", 1000, replace = T)),
+              drogas = sample(c("Sí", "No"), 1000, replace = T),
               hr_trabajo = rpois(1000, 40))
 ```
 
@@ -55,7 +56,7 @@ head(regresion)
 ## Dos variables numéricas.
 Cuando tenemos dos variables numéricas, $X$ y $Y$, establecemos su correlación como:
 
-<<INSERT FORMULA HERE>>
+$$ r_{xy} = \frac{cov_{xy}}{s_{x}s_{y}} = \frac{\sum^{n}_{i = 1}(x_{i} - \overline{x})(y_{i} - \overline{y})}{(n-1)s_{x}s_{y}}$$
 
 Noten que si invertimos el orden de $Y$ y $X$, no obtendremos diferencias. Esto implica que esta prueba no distingue entre variables *dependientes* e *independientes*
 
@@ -68,7 +69,112 @@ cor.test(mtcars$mpg, mtcars$wt)
 
 ---
 ## Graficando en una nube de puntos.
-```{r}
-plot(mtcars$mpg, mtcars$wt)
+```{r fig.align='center'}
+plot(mtcars$mpg, mtcars$wt, xlab = "Millas por galón", ylab = "Peso")
 ```
+
+--- .segue bg:royalblue
+## Modelo Lineal
+
+---
+## El modelo más simple
+El modelo más simple con el que vamos a trabajar tiene la forma:
+$$ y_{i} = \beta_{0} + \beta_{1} x_{i} $$
+Una vez estimado, este modelo tomará la siguiente forma:
+$$ E(y) = \hat{\beta}_{0} + \hat{\beta}_{1} x_{i} + \epsilon_{i}$$
+
+Se debe recordar que lo que buscamos es una **ecuación de la recta** que pase por la mayor cantidad de puntos, es decir:
+
+$$ \min \epsilon_{i} = y_{i} - \hat{\beta}_{0} - \hat{\beta}_{1}x_{i}$$
+
+---
+## Estimación en R.
+Utilizamos la función **lm** (*linear model*) para crear un objeto que contenga lo siguiente:
+* El modelo a estimar.
+* El $R^{2}$ y su valor $p$.
+* Los coeficientes de regresión, con sus pruebas $T$ y valores $p$.
+* Entre otros elementos más específicos.
+Continuando con el ejemplo de correlación, estimaremos un modelo lineal en que las millas por galón son una función del peso de cada automóvil.
+```{r}
+modelo1<-lm(mpg~wt, data = mtcars)
+```
+Para ver el contenido del objeto:
+
+---
+```{r}
+summary(modelo1)
+```
+
+---
+Consideremos el gráfico de la correlación entre ambas variables, ahora utilizando el paquete [ggplot2]:
+```{r}
+install.packages("ggplot2", repos = 'https://dirichlet.mat.puc.cl/')
+library(ggplot2)
+```
+
+---
+```{r fig.align='center'}
+ggplot(data = mtcars, aes(wt,mpg)) + geom_point()
+```
+
+---
+## Agregando la recta de regresión estimada.
+```{r fig.height = 6.5, fig.width = 8, fig.align = "center"}
+ggplot(data = mtcars, aes(wt,mpg)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+---
+## Probando algunas cosas.
+
+### 1. El Coeficiente de correlación al cuadrado es igual al $R^{2}$
+```{r}
+cor(mtcars$wt, mtcars$mpg)^2
+```
+### 2. La suma de los errores es cercana a cero
+```{r}
+sum(modelo1$residuals)
+```
+
+--- .segue bg:royalblue
+## Modelos Multivariados
+
+---
+## Forma General
+Un modelo de regresión multivariado tiene la siguiente forma (general):
+$$ y_{i} = \beta_{0} + \beta_{1}x_{1i} + \beta_{2}x_{2i} + \ldots + \beta_{k}x_{ki}$$
+En este caso, probaremos un modelo con dos variables independientes, peso (wt) y caballos de fuerza (hp). El modelo quedará de la siguiente forma:
+$$ mpg_{i} = \beta_{0} + \beta_{1} wt_{i} + \beta_{2} hp_{i}$$
+
+---
+## Estimación en R.
+Para estimar el modelo, crearemos un objeto [modelo2].
+```{r}
+modelo2<-lm(mpg ~ wt + hp, data = mtcars)
+anova(modelo2)
+```
+
+---
+```{r}
+summary(modelo2)
+```
+
+--- .segue bg:royalblue
+## Variables categóricas como predictores.
+
+---
+## Extensión del modelo
+La inclusión de variables categóricas es un caso más del modelo general. Sólo se debe tener en cuenta que si se quiere incluir una variable de este tipo, debe ser de tipo *factor*.
+
+Consideremos un ejemplo de los datos simulados, donde modelamos la variable **dolor** como una función de **edad** y **diagnóstico**.
+```{r}
+modelo3<-lm(dolor~edad + factor(diagnostico), data = regresion)
+```
+
+--- .smallcode
+```{r echo=FALSE}
+summary(modelo3)
+```
+
+--- .segue bg:royalblue
+# ¿Preguntas?
 
